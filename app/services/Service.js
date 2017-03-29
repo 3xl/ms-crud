@@ -22,13 +22,19 @@ class Service {
     /**
      * Get all resources
      * 
+     * @param {Object} query
+     * 
      * @public
      * 
      * @returns Rx.Observable
      * 
      * @memberOf Service
      */
-    all() {        
+    all(query = {}) {
+        if(typeof query !== 'object') {
+            return Rx.Observable.throwError();
+        }
+
         return this.repository.getResources();
     }
 
@@ -42,6 +48,10 @@ class Service {
      * @memberOf Service
      */
     one(id) {
+        if(typeof id !== 'string') {
+            return Rx.Observable.throwError();
+        }
+
         return this.repository.getResource(id);
     }
 
@@ -55,11 +65,15 @@ class Service {
      * @memberOf Service
      */
     create(resource) {
+        if(typeof resource !== 'object') {
+            return Rx.Observable.throwError();
+        }
+
         return this.repository.createResource(resource)
     }
 
     /**
-     * Update single resource
+     * Update a resource
      * 
      * @param {String} id
      * @param {Object} data
@@ -69,7 +83,27 @@ class Service {
      * @memberOf Service
      */
     update(id, data) {
+        if(typeof id !== 'string' && typeof data !== 'object') {
+            return Rx.Observable.throwError();
+        }
+
         return this.repository.updateResource(id, data);
+    }
+
+    /**
+     * Remove a resource
+     * 
+     * @param {String} id 
+     * @returns 
+     * 
+     * @memberOf Service
+     */
+    remove(id) {
+        if(typeof id !== 'string') {
+            return Rx.Observable.throwError();
+        }
+
+        return this.repository.removeResource(id);
     }
 }
 

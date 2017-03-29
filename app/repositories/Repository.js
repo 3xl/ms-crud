@@ -1,6 +1,6 @@
 'use strict';
 
-const model = require('../models/Model.js');
+const resource = require('../models/Resource');
 const Rx    = require('rx');
 
 /**
@@ -16,13 +16,13 @@ class Repository {
      * @memberOf Repository
      */
     constructor() {
-        this.model = model('Resource');
+        this.model = resource;
     }
 
     /**
      * Get all resources from db
      * 
-     * @returns
+     * @returns Rx.Observable
      * 
      * @memberOf Repository
      */
@@ -31,10 +31,11 @@ class Repository {
     }
 
     /**
-     * Get on resource from db
+     * Get a resource from db
      * 
      * @param {any} id
-     * @returns
+     * 
+     * @returns Rx.Observable
      * 
      * @memberOf Repository
      */
@@ -46,7 +47,8 @@ class Repository {
      * Create a resource
      * 
      * @param {any} sonar
-     * @returns
+     * 
+     * @returns Rx.Observable
      * 
      * @memberOf Repository
      */
@@ -55,16 +57,30 @@ class Repository {
     }
 
     /**
-     * Update a single resource
+     * Update a resource
      * 
      * @param {String} id
      * @param {Objact} data
-     * @returns
+     * 
+     * @returns Rx.Observable
      * 
      * @memberOf Repository
      */
-    update(id, data) {
+    updateResource(id, data) {
         return Rx.Observable.fromPromise(this.model.update({ _id: id }, data));
+    }
+
+    /**
+     * Remove a resource
+     * 
+     * @param {String} id 
+     * 
+     * @returns Rx.Observable
+     * 
+     * @memberOf Repository
+     */
+    removeResource(id) {
+        return Rx.Observable.fromPromise(this.model.find({ _id: id}).remove());
     }
 }
 

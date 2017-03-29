@@ -14,10 +14,10 @@ const mongoose   = require('mongoose');
 let app = express();
 
 // express middleware
-if(process.env.DEBUG == 1) {
-    const morgan = require('morgan')
+if(process.env.LOG == 1) {
+    const morgan = require('morgan');
     
-    app.use(morgan(':date[iso] :method :req[header] :url :status - :response-time ms'));
+    app.use(morgan('combined'));
 }
 
 app.use(bodyParser.json());

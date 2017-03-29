@@ -23,13 +23,13 @@ class Controller {
      * @memberOf Controller
      */
     static all(req, res, next) {
-        let source = service.all();
+        let source = service.all(req.query);
 
         Controller.subscribe(source, res);
     }
 
     /**
-     * Get single resource
+     * Get a resource
      * 
      * @static
      * @param {any} req
@@ -61,7 +61,7 @@ class Controller {
     }
 
     /**
-     * Update single resource
+     * Update a resource
      * 
      * @static
      * @param {any} req
@@ -72,6 +72,22 @@ class Controller {
      */
     static update(req, res, next) {
         let source = service.update(req.params.id, req.body);
+
+        Controller.subscribe(source, res);
+    }
+
+    /**
+     * Remove a resource
+     * 
+     * @static
+     * @param {any} req 
+     * @param {any} res 
+     * @param {any} next 
+     * 
+     * @memberOf Controller
+     */
+    static remove(req, res, next) {
+        let source = service.remove(req.params.id);
 
         Controller.subscribe(source, res);
     }
@@ -88,7 +104,10 @@ class Controller {
     static subscribe(source, res) {
         source.subscribe(
             response => res.json({ data: response }),
-            error => res.json(error)
+            error => res.json({ 
+                data: {}, 
+                error: error 
+            })
         );
     }
 }

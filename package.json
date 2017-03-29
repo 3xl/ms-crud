@@ -1,7 +1,7 @@
 {
-  "name": "srv-base",
+  "name": "ms-crud",
   "version": "0.0.1",
-  "description": "Base node project based on Express and Mongoose",
+  "description": "Base crud microservice based on Express and Mongoose",
   "main": "index.js",
   "dependencies": {
     "body-parser": "1.15.2",
@@ -9,8 +9,6 @@
     "express": "4.14.0",
     "mongoose": "4.6.5",
     "morgan": "^1.8.1",
-    "request": "^2.79.0",
-    "request-promise": "^4.1.1",
     "rx": "^4.1.0"
   },
   "devDependencies": {},

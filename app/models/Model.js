@@ -1,10 +1,10 @@
 'use strict'
 
-module.exports = (name, fields) => {
+let Model = (name, fields) => {
     const mongoose = require('mongoose');
 
     /**
-     * Define model schema
+     * Define base schema
      * 
      */
     const schema = mongoose.Schema(fields, {
@@ -17,3 +17,5 @@ module.exports = (name, fields) => {
 
     return mongoose.model(name, schema);
 };
+
+module.exports = Model;
