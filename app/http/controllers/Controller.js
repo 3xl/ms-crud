@@ -1,7 +1,6 @@
 'use strict';
 
-const Rx      = require('rx');
-const Service = require('../services/Service.js');
+const Service = require('../../services/Service.js');
 
 const service = new Service(); 
 
@@ -18,11 +17,10 @@ class Controller {
      * @static
      * @param {any} req
      * @param {any} res
-     * @param {any} next
      * 
      * @memberOf Controller
      */
-    static all(req, res, next) {
+    static all(req, res) {
         let source = service.all(req.query);
 
         Controller.subscribe(source, res);
@@ -34,11 +32,10 @@ class Controller {
      * @static
      * @param {any} req
      * @param {any} res
-     * @param {any} next
      * 
      * @memberOf Controller
      */
-    static one(req, res, next) {        
+    static one(req, res) {        
         let source = service.one(req.params.id);
 
         Controller.subscribe(source, res);
@@ -50,11 +47,10 @@ class Controller {
      * @static
      * @param {any} req
      * @param {any} res
-     * @param {any} next
      * 
      * @memberOf Controller
      */
-    static create(req, res, next) {
+    static create(req, res) {
         let source = service.create(req.body);
 
         Controller.subscribe(source, res);
@@ -66,11 +62,10 @@ class Controller {
      * @static
      * @param {any} req
      * @param {any} res
-     * @param {any} next
      * 
      * @memberOf Controller
      */
-    static update(req, res, next) {
+    static update(req, res) {
         let source = service.update(req.params.id, req.body);
 
         Controller.subscribe(source, res);
@@ -82,11 +77,10 @@ class Controller {
      * @static
      * @param {any} req 
      * @param {any} res 
-     * @param {any} next 
      * 
      * @memberOf Controller
      */
-    static remove(req, res, next) {
+    static remove(req, res) {
         let source = service.remove(req.params.id);
 
         Controller.subscribe(source, res);
@@ -105,7 +99,7 @@ class Controller {
         source.subscribe(
             response => res.json({ data: response }),
             error => res.json({ 
-                data: {}, 
+                data: null, 
                 error: error 
             })
         );

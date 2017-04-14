@@ -15,4 +15,7 @@ router.post('/', Controller.create);
 // PUT /resources
 router.put('/:id', Controller.update);
 
+// REMOVE /resources
+router.delete('/:id', Controller.remove);
+
 module.exports = router;

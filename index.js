@@ -4,47 +4,28 @@
 
 require('dotenv').config({ silent: true });
 
-const express    = require('express');
-const bodyParser = require('body-parser');
-const mongoose   = require('mongoose');
-
-/**
- * Init Express application
- */
-let app = express();
-
-// express middleware
-if(process.env.LOG == 1) {
-    const morgan = require('morgan');
-    
-    app.use(morgan('combined'));
-}
-
-app.use(bodyParser.json());
-
-// application port
-app.set('port', process.env.PORT);
+const mongoose = require('mongoose');
+const App      = require('./app');
 
 /**
  * Mongo connection
+ * 
  */
-let connection = mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_DB, {
+mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_DB, {
     user: process.env.MONGO_USER, 
     pass: process.env.MONGO_PASS
 });
 
 /**
- * Routes
+ * Init application
+ * 
  */
-let routes = require('./app/routes.js');
+let app = new App();
 
-routes.forEach((route) => {
-    app.use(route[0], route[1]);
-});
+if(process.env.LOG == 1) {
+    const morgan = require('morgan');
+    
+    app.add(morgan('combined'));
+}
 
-/**
- * Start application
- */
-let server = app.listen(app.get('port'), () => {
-    console.log('Application started');
-});
+app.start(process.env.PORT);

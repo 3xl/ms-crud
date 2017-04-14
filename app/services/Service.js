@@ -15,8 +15,8 @@ class Service {
      * 
      * @memberOf Service
      */
-    constructor() {
-        this.repository = new Repository();
+    constructor(repository) {
+        this.repository = repository || new Repository();
     }
     
     /**

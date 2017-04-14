@@ -1,13 +1,14 @@
 'use strict'
 
-let Model = (name, fields) => {
-    const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
+let Model = (name = 'Resource', fields) => {
+    
     /**
      * Define base schema
      * 
      */
-    const schema = mongoose.Schema(fields, {
+    let schema = mongoose.Schema(fields, {
         timestamps: { 
             createdAt: 'createdAt',
             updatedAt: 'updatedAt' 

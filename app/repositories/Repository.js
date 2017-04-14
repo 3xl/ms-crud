@@ -1,7 +1,7 @@
 'use strict';
 
-const resource = require('../models/Resource');
 const Rx    = require('rx');
+const Model = require('../models/Model.js');
 
 /**
  * 
@@ -15,8 +15,8 @@ class Repository {
      * 
      * @memberOf Repository
      */
-    constructor() {
-        this.model = resource;
+    constructor(model) {
+        this.model = model || Model();
     }
 
     /**
@@ -46,7 +46,7 @@ class Repository {
     /**
      * Create a resource
      * 
-     * @param {any} sonar
+     * @param {Object} resource
      * 
      * @returns Rx.Observable
      * 
