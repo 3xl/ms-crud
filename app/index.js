@@ -1,6 +1,7 @@
 'use strict';
 
 const express    = require('express');
+const mongoose   = require('mongoose');
 const bodyParser = require('body-parser');
 const RxFs       = require('./commons/RxFs.js');
 const Rx         = require('Rx');
@@ -11,14 +12,22 @@ const Rx         = require('Rx');
  * @class App
  */
 class App {
-
+    
     /**
      * Creates an instance of App.
      * 
+     * @param {String} database 
+     * @param {String} user 
+     * @param {String} password 
+     * 
      * @memberOf App
      */
-    constructor() {
-        this.express = express();
+    constructor(database, user, password, log = 0) {
+        this.express  = express();        
+        this.database = database;
+        this.user     = user;
+        this.password = password;
+        this.log      = log;
 
         this._config();
     }
@@ -32,6 +41,23 @@ class App {
      */
     _config() {
         this.express.use(bodyParser.json());
+
+        /**
+         * Mongo connection
+         * 
+         */
+        mongoose.connect(this.database, {
+            user: this.user, 
+            pass: this.password
+        });
+
+        /**
+         * Logs
+         * 
+         */
+        if(this.log == 1) {            
+            this.express.use(require('morgan')('combined'));
+        }
 
         /**
          * Routes

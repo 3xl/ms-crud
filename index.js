@@ -4,28 +4,17 @@
 
 require('dotenv').config({ silent: true });
 
-const mongoose = require('mongoose');
-const App      = require('./app');
-
-/**
- * Mongo connection
- * 
- */
-mongoose.connect('mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_DB, {
-    user: process.env.MONGO_USER, 
-    pass: process.env.MONGO_PASS
-});
+const App = require('./app');
 
 /**
  * Init application
  * 
  */
-let app = new App();
-
-if(process.env.LOG == 1) {
-    const morgan = require('morgan');
-    
-    app.add(morgan('combined'));
-}
+let app = new App(
+    'mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_DB,
+    process.env.MONGO_USER,
+    process.env.MONGO_PASS,
+    process.env.LOG
+);
 
 app.start(process.env.PORT);
