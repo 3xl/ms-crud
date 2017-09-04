@@ -1,41 +1,42 @@
 'use strict';
 
 const Rx         = require('rx');
-const Repository = require('../repositories/Repository.js');
+const BaseRepository = require('../repositories/BaseRepository.js');
 
 /**
  * 
  * 
- * @class Service
+ * @class BaseService
  */
-class Service {
+class BaseService {
 
     /**
-     * Creates an instance of Service.
+     * Creates an instance of BaseService.
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    constructor(repository) {
-        this.repository = repository || new Repository();
+    constructor() {
+        this.repository = new BaseRepository();
     }
     
     /**
      * Get all resources
      * 
+     * @param {Module} model
      * @param {Object} query
      * 
      * @public
      * 
      * @returns Rx.Observable
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    all(query = {}) {
+    all(model, query = {}) {
         if(typeof query !== 'object') {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.getResources();
+        return this.repository.getResources(model);
     }
 
     /**
@@ -45,66 +46,69 @@ class Service {
      * 
      * @returns Rx.Observable
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    one(id) {
+    one(model, id) {
         if(typeof id !== 'string') {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.getResource(id);
+        return this.repository.getResource(model, id);
     }
 
     /**
      * Create one resource
      * 
-     * @param {Object} resource
+     * @param {Object} model
+     * @param {Object} data
      * 
      * @returns Rx.Observable
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    create(resource) {
-        if(typeof resource !== 'object') {
+    create(model, data) {
+        if(typeof data !== 'object') {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.createResource(resource)
+        return this.repository.createResource(model, data)
     }
 
     /**
      * Update a resource
      * 
+     * @param {Module} model
      * @param {String} id
      * @param {Object} data
      * 
      * @returns Rx.Observable
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    update(id, data) {
+    update(model, id, data) {
         if(typeof id !== 'string' && typeof data !== 'object') {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.updateResource(id, data);
+        return this.repository.updateResource(model, id, data);
     }
 
     /**
      * Remove a resource
      * 
+     * @param {Module} model 
      * @param {String} id 
      * @returns 
      * 
-     * @memberOf Service
+     * @memberof BaseService
      */
-    remove(id) {
+    remove(model, id) {
         if(typeof id !== 'string') {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.removeResource(id);
+        return this.repository.removeResource(model, id);
     }
 }
 
-module.exports = Service;
+module.exports = BaseService;

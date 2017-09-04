@@ -60,12 +60,26 @@ class App {
         }
 
         /**
-         * Routes
+         * Resources
          * 
          */
-        let routes = require('./http/routes.js');
+        let resources = require('./resources.js');
 
-        routes.forEach((route) => {
+        // 1. Models
+        this.express.set('models', resources.models);
+
+        // 2. Routes
+
+        // Extract the model name from the baseUrl property of the request
+        this.express.use((req, res, next) => {
+            let models = this.express.get('models')
+
+            req.model = models[req.url.substring(1).split('/')[0]];
+
+            next();
+        })
+
+        resources.routes.forEach((route) => {
             this.express.use(route[0], route[1]);
         });
     }
@@ -98,43 +112,6 @@ class App {
         this.express.listen(port, () => {
             console.log('Application started');
         });
-    }
-
-    /**
-     * Rename base resource endpoint
-     * 
-     * @param {String} - name
-     * 
-     * @static
-     * 
-     * @memberOf App
-     */
-    static rename(name) {
-        if(name == '')
-            return false;
-
-        let folder = process.cwd() + '/app/http/routes/',
-            newFile = folder + name + '.js';
-        
-        // get folder content
-        RxFs.readdir(folder)
-
-            // check the existance of the file. If there's not file throw an error
-            .flatMap(files => {
-                if(files.length > 1)
-                    Rx.Observable.throw('This folder cannot contains more than one file.');
-
-                return Rx.Observable.from(files);
-            })
-
-            // rename the only file of this folder
-            .first(file => RxFs.rename(folder + file, newFile))
-
-            // execute subscription
-            .subscribe(
-                response => console.log('The file ' + response + ' has been renamed in ' + newFile),
-                error => console.log(error)
-            );
     }
 
 }
