@@ -3,7 +3,6 @@
 const express    = require('express');
 const mongoose   = require('mongoose');
 const bodyParser = require('body-parser');
-const RxFs       = require('./commons/RxFs.js');
 const Rx         = require('Rx');
 const fs         = require('fs');
 const path       = require('path');
@@ -22,7 +21,7 @@ class App {
      * @param {String} user 
      * @param {String} password 
      * 
-     * @memberOf App
+     * @memberof App
      */
     constructor(database, user, password, log = 0) {
         this.express  = express();        
@@ -39,7 +38,7 @@ class App {
      * 
      * @private
      * 
-     * @memberOf App
+     * @memberof App
      */
     _config() {
         this.express.use(bodyParser.json());
@@ -91,12 +90,12 @@ class App {
      * 
      * @private
      * 
-     * @memberOf App
+     * @memberof App
      */
     _getResources() {
         let basename     = path.basename(module.filename);
         let modelsFolder = __dirname + '/models';
-        let routesFolder = __dirname + '/http/routes';
+        let routersFolder = __dirname + '/http/routers';
 
         let models = [];
         let routes = [];
@@ -107,9 +106,9 @@ class App {
             })
             .forEach((file) => {
                 let modelModule = require(path.join(modelsFolder, file)),
-                    model = file.slice(0, -3).toLowerCase(),
-                    router = require(path.join(routesFolder, 'BaseRoutes.js')),
-                    route = '/' + file.slice(0, -3);
+                    model       = file.slice(0, -3).toLowerCase(),
+                    router      = require(path.join(routersFolder, 'BaseRouter.js')),
+                    route       = '/' + file.slice(0, -3);
 
                 models[model] = modelModule;
                 routes.push([route, router]);
@@ -128,7 +127,7 @@ class App {
      * 
      * @public
      * 
-     * @memberOf App
+     * @memberof App
      */
     add(module) {
         this.express.use(module);
@@ -141,7 +140,7 @@ class App {
      * 
      * @public
      * 
-     * @memberOf App
+     * @memberof App
      */
     start(port) {
         this.express.set('port', port);

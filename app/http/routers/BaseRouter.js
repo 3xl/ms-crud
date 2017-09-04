@@ -3,19 +3,19 @@
 const BaseController = require('../controllers/BaseController.js');
 const router         = require('express').Router();
 
-// GET /resources
+// GET /{resources}
 router.get('/', BaseController.all);
 
-// GET /resources/:id
+// GET /{resources}/:id
 router.get('/:id', BaseController.one);
 
-// POST /resources
+// POST /{resources}
 router.post('/', BaseController.create);
 
-// PUT /resources
+// PUT /{resources}
 router.put('/:id', BaseController.update);
 
-// REMOVE /resources
+// REMOVE /{resources}
 router.delete('/:id', BaseController.remove);
 
 module.exports = router;

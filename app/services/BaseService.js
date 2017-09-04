@@ -1,6 +1,6 @@
 'use strict';
 
-const Rx         = require('rx');
+const Rx             = require('rx');
 const BaseRepository = require('../repositories/BaseRepository.js');
 
 /**
