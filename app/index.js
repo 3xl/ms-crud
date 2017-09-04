@@ -5,6 +5,8 @@ const mongoose   = require('mongoose');
 const bodyParser = require('body-parser');
 const RxFs       = require('./commons/RxFs.js');
 const Rx         = require('Rx');
+const fs         = require('fs');
+const path       = require('path');
 
 /**
  * 
@@ -63,7 +65,7 @@ class App {
          * Resources
          * 
          */
-        let resources = require('./resources.js');
+        let resources = this._getResources();
 
         // 1. Models
         this.express.set('models', resources.models);
@@ -82,6 +84,41 @@ class App {
         resources.routes.forEach((route) => {
             this.express.use(route[0], route[1]);
         });
+    }
+
+    /**
+     * Load all the models and create the corresponding routes
+     * 
+     * @private
+     * 
+     * @memberOf App
+     */
+    _getResources() {
+        let basename     = path.basename(module.filename);
+        let modelsFolder = __dirname + '/models';
+        let routesFolder = __dirname + '/http/routes';
+
+        let models = [];
+        let routes = [];
+
+        fs.readdirSync(modelsFolder)
+            .filter((file) => {
+                return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+            })
+            .forEach((file) => {
+                let modelModule = require(path.join(modelsFolder, file)),
+                    model = file.slice(0, -3).toLowerCase(),
+                    router = require(path.join(routesFolder, 'BaseRoutes.js')),
+                    route = '/' + file.slice(0, -3);
+
+                models[model] = modelModule;
+                routes.push([route, router]);
+            });
+
+        return {
+            models: models,
+            routes: routes
+        };
     }
 
     /**
