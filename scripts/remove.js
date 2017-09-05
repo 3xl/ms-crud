@@ -13,4 +13,8 @@ if(process.argv[2] === undefined) {
 let modelName = process.argv[2].charAt(0).toUpperCase() + process.argv[2].slice(1);
 
 // Remove the model file
-fs.unlinkSync(__dirname + "/../app/models/" + modelName + ".js");
+let file = __dirname + "/../app/models/" + modelName + ".js";
+
+if(fs.existsSync(file)) {
+    fs.unlinkSync(__dirname + "/../app/models/" + modelName + ".js");
+}

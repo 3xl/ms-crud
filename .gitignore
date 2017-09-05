@@ -13,7 +13,7 @@ npm-debug.log*
 #Dotenv
 .env
 .env.*
-!.env.example
+!.env.template
 
 # Runtime data
 pids

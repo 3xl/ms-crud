@@ -19,6 +19,6 @@
     "add": "node ./scripts/add.js",
     "remove": "node ./scripts/remove.js"
   },
-  "author": "Claudio Geraci <claudio@mosaicoon.com>",
+  "author": "Claudio Geraci <geraciclaudio82@gmail.com>",
   "license": "ISC"
 }

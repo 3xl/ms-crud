@@ -25,6 +25,6 @@ fs.writeFileSync(
     __dirname + "/../app/models/" + modelName + ".js", 
     tmpl("template", { modelName: modelName }),
     {
-        flags: 'a+'
+        flags: 'ax+'
     }
 );
