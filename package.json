@@ -10,12 +10,13 @@
     "express": "4.14.0",
     "mongoose": "4.6.5",
     "morgan": "1.8.1",
+    "nodemon": "^1.12.0",
     "rx": "4.1.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "add": "node ./scripts/add.js",
     "remove": "node ./scripts/remove.js"
   },
