@@ -3,7 +3,7 @@
 const express    = require('express');
 const mongoose   = require('mongoose');
 const bodyParser = require('body-parser');
-const Rx         = require('Rx');
+const Rx         = require('rx');
 const fs         = require('fs');
 const path       = require('path');
 
