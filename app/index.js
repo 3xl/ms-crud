@@ -100,19 +100,21 @@ class App {
         let models = [];
         let routes = [];
 
-        fs.readdirSync(modelsFolder)
-            .filter((file) => {
-                return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-            })
-            .forEach((file) => {
-                let modelModule = require(path.join(modelsFolder, file)),
-                    model       = file.slice(0, -3).toLowerCase(),
-                    router      = require(path.join(routersFolder, 'BaseRouter.js')),
-                    route       = '/' + file.slice(0, -3);
+        if(fs.existsSync(modelsFolder)) {
+            fs.readdirSync(modelsFolder)
+                .filter((file) => {
+                    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+                })
+                .forEach((file) => {
+                    let modelModule = require(path.join(modelsFolder, file)),
+                        model       = file.slice(0, -3).toLowerCase(),
+                        router      = require(path.join(routersFolder, 'BaseRouter.js')),
+                        route       = '/' + file.slice(0, -3);
 
-                models[model] = modelModule;
-                routes.push([route, router]);
-            });
+                    models[model] = modelModule;
+                    routes.push([route, router]);
+                });
+        }
 
         return {
             models: models,
