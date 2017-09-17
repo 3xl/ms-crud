@@ -1,6 +1,7 @@
 'use strict';
 
-const mongoose = require('mongoose');
+const mongoose         = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
 
 /**
  * Define base schema
@@ -18,5 +19,7 @@ let schema = mongoose.Schema(
         minimize: false
     }
 );
+
+schema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('{%=o.modelName%}', schema);

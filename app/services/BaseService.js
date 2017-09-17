@@ -27,7 +27,7 @@ class BaseService {
      * 
      * @public
      * 
-     * @returns Rx.Observable
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseService
      */
@@ -36,7 +36,9 @@ class BaseService {
             return Rx.Observable.throwError();
         }
 
-        return this.repository.getResources(model);
+        let pagination = this._getPagination(query);
+
+        return this.repository.getResources(model, query, pagination);
     }
 
     /**
@@ -44,7 +46,7 @@ class BaseService {
      * 
      * @param {String} id
      * 
-     * @returns Rx.Observable
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseService
      */
@@ -62,7 +64,7 @@ class BaseService {
      * @param {Object} model
      * @param {Object} data
      * 
-     * @returns Rx.Observable
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseService
      */
@@ -81,7 +83,7 @@ class BaseService {
      * @param {String} id
      * @param {Object} data
      * 
-     * @returns Rx.Observable
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseService
      */
@@ -108,6 +110,45 @@ class BaseService {
         }
 
         return this.repository.removeResource(model, id);
+    }
+
+    /**
+     * Extract properties from the query string object and build a correct
+     * pagination object. According to the mongoose-paginate package the main 
+     * properties used to handle the pagination are:
+     * 1. limit
+     * 2. offset
+     * 3. page
+     * 
+     * @private
+     * 
+     * @param {Object} query 
+     * @returns {Object}
+     * 
+     * @memberof BaseService
+     */
+    _getPagination(query) {
+        let pagination = {};
+
+        if(query.hasOwnProperty('limit')) {
+            pagination.limit = parseInt(query.limit);
+
+            delete query.limit;
+        }
+        
+        if(query.hasOwnProperty('offset')) {
+            pagination.offset = parseInt(query.offset);
+
+            delete query.offset;
+        }
+        
+        if(query.hasOwnProperty('page')) {
+            pagination.page = parseInt(query.page);
+
+            delete query.page;
+        }
+
+        return pagination;
     }
 }
 

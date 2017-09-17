@@ -11,10 +11,28 @@ if(process.argv[2] === undefined) {
 
 // Adjust the model name capitalizing the first character
 let modelName = process.argv[2].charAt(0).toUpperCase() + process.argv[2].slice(1);
+let file      = '';
 
-// Remove the model file
-let file = __dirname + "/../app/models/" + modelName + ".js";
+/**
+ * Model 
+ * 
+ */
+
+ // Remove the model file
+file = __dirname + "/../app/models/" + modelName + ".js";
 
 if(fs.existsSync(file)) {
     fs.unlinkSync(__dirname + "/../app/models/" + modelName + ".js");
+}
+
+/**
+ * Router
+ * 
+ */
+
+ // Remove the model file
+file = __dirname + "/../app/http/routers/" + modelName + ".js";
+
+if(fs.existsSync(file)) {
+    fs.unlinkSync(__dirname + "/../app/http/routers/" + modelName + ".js");
 }

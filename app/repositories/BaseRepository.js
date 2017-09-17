@@ -20,13 +20,25 @@ class BaseRepository {
      * Get all resources from db
      * 
      * @param {String} model
+     * @param {Object} query
+     * @param {Object} pagination
      * 
      * @returns Rx.Observable
      * 
      * @memberof BaseRepository
      */
-    getResources(model) {
-        return Rx.Observable.fromPromise(model.find());
+    getResources(model, query, pagination) {
+        // return Rx.Observable.fromPromise(model.find());
+        return Rx.Observable.create(observer => {
+            model.paginate({}, pagination, (error, results) => {
+                if(error) {
+                    observer.onError(error);
+                }
+
+                observer.onNext(results);
+                observer.onCompleted();
+            });
+        });
     }
 
     /**

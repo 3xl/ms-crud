@@ -75,7 +75,7 @@ class App {
         this.express.use((req, res, next) => {
             let models = this.express.get('models')
 
-            req.model = models[req.url.substring(1).split('/')[0]];
+            req.model = models[req.path.substring(1).split('/')[0]];
 
             next();
         })
@@ -106,10 +106,15 @@ class App {
                     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
                 })
                 .forEach((file) => {
+                    // Models
                     let modelModule = require(path.join(modelsFolder, file)),
-                        model       = file.slice(0, -3).toLowerCase(),
-                        router      = require(path.join(routersFolder, 'BaseRouter.js')),
-                        route       = '/' + file.slice(0, -3);
+                        model       = file.slice(0, -3).toLowerCase();
+                    
+                    // Routers
+                    let routerFile = fs.existsSync(path.join(routersFolder, file)) ? path.join(routersFolder, file) : path.join(routersFolder, 'BaseRouter.js');
+
+                    let router = require(routerFile),
+                        route  = '/' + file.slice(0, -3);
 
                     models[model] = modelModule;
                     routes.push([route, router]);
