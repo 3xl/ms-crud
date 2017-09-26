@@ -201,7 +201,7 @@ class App  extends EventEmitter {
      * @memberof App
      */
     getServiceInstance(modelName) {
-        modelName = modelName.toUpperCase() + modelName.slice(1);
+        modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
         let Service = require('./services/' + modelName + 'Service.js');
 
