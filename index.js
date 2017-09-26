@@ -31,5 +31,4 @@ app.on('KafkaEvent', (message) => {
 });
 */
 
-app.getServiceInstance('items');
 app.start(process.env.PORT);
