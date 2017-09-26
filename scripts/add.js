@@ -49,7 +49,70 @@ tmpl.load = (moduleName) => {
 // Save the model file
 fs.writeFileSync(
     __dirname + "/../app/http/routers/" + modelName + ".js", 
-    tmpl("template-router", {}),
+    tmpl("template-router", { modelName: modelName }),
+    {
+        flags: 'ax+'
+    }
+);
+
+/**
+ * Controller
+ * 
+ */
+
+// Override the template loading method:
+tmpl.load = (moduleName) => {
+    var filename = __dirname + "/templates/Controller.tmpl";
+    
+    return fs.readFileSync(filename, "utf8");
+};
+
+// Save the controller file
+fs.writeFileSync(
+    __dirname + "/../app/http/controllers/" + modelName + "Controller.js", 
+    tmpl("template-controller", { modelName: modelName }),
+    {
+        flags: 'ax+'
+    }
+);
+
+/**
+ * Service
+ * 
+ */
+
+// Override the template loading method:
+tmpl.load = (moduleName) => {
+    var filename = __dirname + "/templates/Service.tmpl";
+    
+    return fs.readFileSync(filename, "utf8");
+};
+
+// Save the service file
+fs.writeFileSync(
+    __dirname + "/../app/services/" + modelName + "Service.js", 
+    tmpl("template-service", { modelName: modelName }),
+    {
+        flags: 'ax+'
+    }
+);
+
+/**
+ * Repository
+ * 
+ */
+
+// Override the template loading method:
+tmpl.load = (moduleName) => {
+    var filename = __dirname + "/templates/Repository.tmpl";
+    
+    return fs.readFileSync(filename, "utf8");
+};
+
+// Save the service file
+fs.writeFileSync(
+    __dirname + "/../app/repositories/" + modelName + "Repository.js", 
+    tmpl("template-repository", { modelName: modelName }),
     {
         flags: 'ax+'
     }

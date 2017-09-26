@@ -1,6 +1,8 @@
 'use strict';
 
-const Rx = require('rx');
+const Rx      = require('rx');
+const MongoQS = require('mongo-querystring');
+const Utils   = require('../utils/Utils.js');
 
 /**
  * 
@@ -14,12 +16,14 @@ class BaseRepository {
      * 
      * @memberof BaseRepository
      */
-    constructor() {}
+    constructor() {
+        this.mongoqs = new MongoQS(); 
+    }
 
     /**
      * Get all resources from db
      * 
-     * @param {String} model
+     * @param {Model} model
      * @param {Object} query
      * @param {Object} pagination
      * 
@@ -27,24 +31,29 @@ class BaseRepository {
      * 
      * @memberof BaseRepository
      */
-    getResources(model, query, pagination) {
-        // return Rx.Observable.fromPromise(model.find());
-        return Rx.Observable.create(observer => {
-            model.paginate({}, pagination, (error, results) => {
-                if(error) {
-                    observer.onError(error);
-                }
+    getResources(model, query = {}, pagination = {}) {
+        query = this.mongoqs.parse(query);
 
-                observer.onNext(results);
-                observer.onCompleted();
+        if(Utils.Object.isEmpty(pagination)) {
+            return Rx.Observable.fromPromise(model.find(query));
+        } else {
+            return Rx.Observable.create(observer => {
+                model.paginate(query, pagination, (error, results) => {
+                    if(error) {
+                        observer.onError(error);
+                    }
+    
+                    observer.onNext(results);
+                    observer.onCompleted();
+                });
             });
-        });
+        }
     }
 
     /**
      * Get a resource from db
      * 
-     * @param {String} model
+     * @param {Model} model
      * @param {any} id
      * 
      * @returns Rx.Observable
@@ -58,7 +67,7 @@ class BaseRepository {
     /**
      * Create a resource
      * 
-     * @param {String} model
+     * @param {Model} model
      * @param {Object} data
      * 
      * @returns Rx.Observable
@@ -72,7 +81,7 @@ class BaseRepository {
     /**
      * Update a resource
      * 
-     * @param {String} model
+     * @param {Model} model
      * @param {String} id
      * @param {Objact} data
      * 

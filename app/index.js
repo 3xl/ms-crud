@@ -1,18 +1,20 @@
 'use strict';
 
-const express    = require('express');
-const mongoose   = require('mongoose');
-const bodyParser = require('body-parser');
-const Rx         = require('rx');
-const fs         = require('fs');
-const path       = require('path');
+const express      = require('express');
+const mongoose     = require('mongoose');
+const bodyParser   = require('body-parser');
+const Rx           = require('rx');
+const fs           = require('fs');
+const path         = require('path');
+const Kafka        = require('no-kafka');
+const EventEmitter = require('events');
 
 /**
  * 
  * 
  * @class App
  */
-class App {
+class App  extends EventEmitter {
     
     /**
      * Creates an instance of App.
@@ -23,12 +25,16 @@ class App {
      * 
      * @memberof App
      */
-    constructor(database, user, password, log = 0) {
-        this.express  = express();        
-        this.database = database;
-        this.user     = user;
-        this.password = password;
-        this.log      = log;
+    constructor(database, user, password, log = 0, kafka = 0) {
+        super();
+
+        this.express   = express();        
+        this.database  = database;
+        this.user      = user;
+        this.password  = password;
+        this.log       = log;        
+        this.kafka     = kafka;
+        this.consumers = [];
 
         this._config();
     }
@@ -47,6 +53,8 @@ class App {
          * Mongo connection
          * 
          */
+        mongoose.Promise = global.Promise;
+
         mongoose.connect(this.database, {
             user: this.user, 
             pass: this.password
@@ -56,7 +64,7 @@ class App {
          * Logs
          * 
          */
-        if(this.log == 1) {            
+        if(this.log == 1) {
             this.express.use(require('morgan')('combined'));
         }
 
@@ -86,6 +94,27 @@ class App {
     }
 
     /**
+     * It handles the message intercepted by the kafka consumer 
+     * 
+     * @param {any} - messageSet
+     * 
+     * @private
+     * 
+     * @memberof App
+     */
+    _messageHandler(messageSet) {
+        messageSet.forEach((m) => {
+            let message = JSON.parse(m.message.value.toString('utf8'));
+            
+            if(this.log == 1) {
+                console.log(new Date().toISOString(), 'Event consumed');
+            }
+
+            this.emit('KafkaEvent', message);
+        });
+    }
+
+    /**
      * Load all the models and create the corresponding routes
      * 
      * @private
@@ -93,8 +122,7 @@ class App {
      * @memberof App
      */
     _getResources() {
-        let basename     = path.basename(module.filename);
-        let modelsFolder = __dirname + '/models';
+        let modelsFolder  = __dirname + '/models';
         let routersFolder = __dirname + '/http/routers';
 
         let models = [];
@@ -103,7 +131,7 @@ class App {
         if(fs.existsSync(modelsFolder)) {
             fs.readdirSync(modelsFolder)
                 .filter((file) => {
-                    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+                    return (file.indexOf('.') !== 0) && (file.slice(-3) === '.js');
                 })
                 .forEach((file) => {
                     // Models
@@ -130,14 +158,54 @@ class App {
     /**
      * Extends express funcionalities adding new middleware
      * 
-     * @param {any} - module
+     * @param {Module} module
      * 
      * @public
      * 
      * @memberof App
      */
-    add(module) {
+    addMiddleware(module) {
         this.express.use(module);
+    }
+
+    /**
+     * Add consumer kafka
+     * 
+     * @param {Object} kafkaConfig 
+     * 
+     * @public
+     * 
+     * @memberof App
+     */
+    addConsumer(kafkaConfig) {
+        let consumer = new Kafka.SimpleConsumer({
+            groupId:          kafkaConfig.groupName,
+            clientId:         kafkaConfig.clientName,
+            connectionString: kafkaConfig.host + ':' + kafkaConfig.port
+        });
+
+        consumer.init().then(() => {
+            return consumer.subscribe(kafkaConfig.topic, [0], this._messageHandler);
+        });
+
+        this.consumers.push(consumer);
+    }
+
+    /**
+     * Return a reference to the service associated with the model
+     * 
+     * @param {String} modelName 
+     * 
+     * @public
+     * 
+     * @memberof App
+     */
+    getServiceInstance(modelName) {
+        modelName = modelName.toUpperCase() + modelName.slice(1);
+
+        let Service = require('./services/' + modelName + 'Service.js');
+
+        return new Service();
     }
 
     /**

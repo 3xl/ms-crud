@@ -36,3 +36,39 @@ file = __dirname + "/../app/http/routers/" + modelName + ".js";
 if(fs.existsSync(file)) {
     fs.unlinkSync(__dirname + "/../app/http/routers/" + modelName + ".js");
 }
+
+/**
+ * Controllers
+ * 
+ */
+
+ // Remove the model file
+file = __dirname + "/../app/http/controllers/" + modelName + "Controller.js";
+
+if(fs.existsSync(file)) {
+    fs.unlinkSync(__dirname + "/../app/http/controllers/" + modelName + "Controller.js");
+}
+
+/**
+ * Services
+ * 
+ */
+
+ // Remove the model file
+file = __dirname + "/../app/services/" + modelName + "Service.js";
+
+if(fs.existsSync(file)) {
+    fs.unlinkSync(__dirname + "/../app/services/" + modelName + "Service.js");
+}
+
+/**
+ * Repositories
+ * 
+ */
+
+ // Remove the model file
+file = __dirname + "/../app/repositories/" + modelName + "Repository.js";
+
+if(fs.existsSync(file)) {
+    fs.unlinkSync(__dirname + "/../app/repositories/" + modelName + "Repository.js");
+}

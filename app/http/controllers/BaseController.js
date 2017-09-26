@@ -2,7 +2,7 @@
 
 const BaseService = require('../../services/BaseService.js');
 
-const service = new BaseService(); 
+const service = new BaseService();
 
 /**
  * 
