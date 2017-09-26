@@ -18,9 +18,10 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "add": "node ./scripts/add.js",
-    "remove": "node ./scripts/remove.js"
+    "remove": "node ./scripts/remove.js",
+    "list": "node ./scripts/list.js"
   },
   "author": "Claudio Geraci <geraciclaudio82@gmail.com>",
   "license": "ISC"
