@@ -207,6 +207,21 @@ class App  extends EventEmitter {
 
         return new Service();
     }
+    
+    /**
+     * Return a reference to the model
+     * 
+     * @param {String} modelName 
+     * 
+     * @public
+     * 
+     * @memberof App
+     */
+    getModel(modelName) {
+        modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+
+        return require('./models/' + modelName + '.js');
+    }
 
     /**
      * Start application
