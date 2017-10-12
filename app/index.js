@@ -19,21 +19,17 @@ class App  extends EventEmitter {
     /**
      * Creates an instance of App.
      * 
-     * @param {String} database 
-     * @param {String} user 
-     * @param {String} password 
+     * @param {Object} mongo 
+     * @param {Number} log
      * 
      * @memberof App
      */
-    constructor(database, user, password, log = 0, kafka = 0) {
+    constructor(mongo = {}, log = 0) {
         super();
 
         this.express   = express();        
-        this.database  = database;
-        this.user      = user;
-        this.password  = password;
-        this.log       = log;        
-        this.kafka     = kafka;
+        this.mongo     = mongo;
+        this.log       = log;
         this.consumers = [];
 
         this._config();
@@ -54,10 +50,10 @@ class App  extends EventEmitter {
          * 
          */
         mongoose.Promise = global.Promise;
-
-        mongoose.connect(this.database, {
-            user: this.user, 
-            pass: this.password
+        
+        mongoose.connect(this.mongo.connection, {
+            user: this.mongo.user, 
+            pass: this.mongo.password
         });
 
         /**
@@ -81,7 +77,7 @@ class App  extends EventEmitter {
 
         // Extract the model name from the baseUrl property of the request
         this.express.use((req, res, next) => {
-            let models = this.express.get('models')
+            let models = this.express.get('models');
 
             req.model = models[req.path.substring(1).split('/')[0]];
 
@@ -185,7 +181,7 @@ class App  extends EventEmitter {
         });
 
         consumer.init().then(() => {
-            return consumer.subscribe(kafkaConfig.topic, [0], this._messageHandler);
+            return consumer.subscribe(kafkaConfig.topic, [0], this._messageHandler.bind(this));
         });
 
         this.consumers.push(consumer);
