@@ -14,6 +14,8 @@ class BaseRepository {
     /**
      * Creates an instance of BaseRepository.
      * 
+     * @public
+     * 
      * @memberof BaseRepository
      */
     constructor() {
@@ -27,7 +29,9 @@ class BaseRepository {
      * @param {Object} query
      * @param {Object} pagination
      * 
-     * @returns Rx.Observable
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseRepository
      */
@@ -56,7 +60,9 @@ class BaseRepository {
      * @param {Model} model
      * @param {any} id
      * 
-     * @returns Rx.Observable
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseRepository
      */
@@ -70,7 +76,9 @@ class BaseRepository {
      * @param {Model} model
      * @param {Object} data
      * 
-     * @returns Rx.Observable
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseRepository
      */
@@ -85,7 +93,9 @@ class BaseRepository {
      * @param {String} id
      * @param {Objact} data
      * 
-     * @returns Rx.Observable
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseRepository
      */
@@ -98,7 +108,9 @@ class BaseRepository {
      * 
      * @param {String} id 
      * 
-     * @returns Rx.Observable
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseRepository
      */

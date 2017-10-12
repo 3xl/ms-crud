@@ -13,6 +13,8 @@ class BaseService {
     /**
      * Creates an instance of BaseService.
      * 
+     * @public
+     * 
      * @memberof BaseService
      */
     constructor() {
@@ -46,6 +48,8 @@ class BaseService {
      * 
      * @param {String} id
      * 
+     * @public
+     * 
      * @returns {Rx.Observable}
      * 
      * @memberof BaseService
@@ -63,6 +67,8 @@ class BaseService {
      * 
      * @param {Object} model
      * @param {Object} data
+     * 
+     * @public
      * 
      * @returns {Rx.Observable}
      * 
@@ -83,6 +89,8 @@ class BaseService {
      * @param {String} id
      * @param {Object} data
      * 
+     * @public
+     * 
      * @returns {Rx.Observable}
      * 
      * @memberof BaseService
@@ -100,7 +108,10 @@ class BaseService {
      * 
      * @param {Module} model 
      * @param {String} id 
-     * @returns 
+     * 
+     * @public
+     * 
+     * @returns {Rx.Observable}
      * 
      * @memberof BaseService
      */
@@ -120,9 +131,10 @@ class BaseService {
      * 2. offset
      * 3. page
      * 
+     * @param {Object} query 
+     * 
      * @private
      * 
-     * @param {Object} query 
      * @returns {Object}
      * 
      * @memberof BaseService

@@ -14,7 +14,7 @@ const EventEmitter = require('events');
  * 
  * @class App
  */
-class App  extends EventEmitter {
+class App extends EventEmitter {
     
     /**
      * Creates an instance of App.
@@ -74,12 +74,16 @@ class App  extends EventEmitter {
         this.express.set('models', resources.models);
 
         // 2. Routes
-
         // Extract the model name from the baseUrl property of the request
+        // Add a reference to thi class
         this.express.use((req, res, next) => {
+            // model
             let models = this.express.get('models');
 
             req.model = models[req.path.substring(1).split('/')[0]];
+
+            // App reference
+            req.ms = this;
 
             next();
         })
@@ -114,6 +118,8 @@ class App  extends EventEmitter {
      * Load all the models and create the corresponding routes
      * 
      * @private
+     * 
+     * @return {Object}
      * 
      * @memberof App
      */
@@ -152,19 +158,6 @@ class App  extends EventEmitter {
     }
 
     /**
-     * Extends express funcionalities adding new middleware
-     * 
-     * @param {Module} module
-     * 
-     * @public
-     * 
-     * @memberof App
-     */
-    addMiddleware(module) {
-        this.express.use(module);
-    }
-
-    /**
      * Add consumer kafka
      * 
      * @param {Object} kafkaConfig 
@@ -194,9 +187,11 @@ class App  extends EventEmitter {
      * 
      * @public
      * 
+     * @return {Service}
+     * 
      * @memberof App
      */
-    getServiceInstance(modelName) {
+    getService(modelName) {
         modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
         let Service = require('./services/' + modelName + 'Service.js');
@@ -210,6 +205,8 @@ class App  extends EventEmitter {
      * @param {String} modelName 
      * 
      * @public
+     * 
+     * @return {Model}
      * 
      * @memberof App
      */

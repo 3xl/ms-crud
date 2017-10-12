@@ -14,11 +14,12 @@ class BaseController {
     /**
      * Get all resources
      * 
-     * @static
-     * @param {any} req
-     * @param {any} res
+     * @param {Object} req
+     * @param {Object} res
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static all(req, res) {
         let source = service.all(req.model, req.query);
@@ -29,11 +30,12 @@ class BaseController {
     /**
      * Get a resource
      * 
-     * @static
-     * @param {any} req
-     * @param {any} res
+     * @param {Object} req
+     * @param {Object} res
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static one(req, res) {        
         let source = service.one(req.model, req.params.id);
@@ -44,11 +46,12 @@ class BaseController {
     /**
      * Create one resource
      * 
-     * @static
-     * @param {any} req
-     * @param {any} res
+     * @param {Object} req
+     * @param {Object} res
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static create(req, res) {
         let source = service.create(req.model, req.body);
@@ -59,11 +62,12 @@ class BaseController {
     /**
      * Update a resource
      * 
-     * @static
-     * @param {any} req
-     * @param {any} res
+     * @param {Object} req
+     * @param {Object} res
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static update(req, res) {
         let source = service.update(req.model, req.params.id, req.body);
@@ -74,11 +78,12 @@ class BaseController {
     /**
      * Remove a resource
      * 
-     * @static
-     * @param {any} req 
-     * @param {any} res 
+     * @param {Object} req 
+     * @param {Object} res 
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static remove(req, res) {
         let source = service.remove(req.model, req.params.id);
@@ -89,11 +94,12 @@ class BaseController {
     /**
      * It handle all the BaseController subscriptions
      * 
-     * @static
      * @param {Rx.Observalbe} source 
-     * @param {Response} res 
+     * @param {Object} res 
      * 
-     * @memberOf BaseController
+     * @static
+     * 
+     * @memberof BaseController
      */
     static subscribe(source, res) {
         source.subscribe(

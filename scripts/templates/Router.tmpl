@@ -1,8 +1,21 @@
 'use strict';
 
 const Controller = require('../controllers/{%=o.modelName%}Controller.js');
-const router     = require('./BaseRouter.js');
+const router     = require('express').Router();
 
-// Add custom routes here
+// GET /{resources}
+router.get('/', Controller.all);
+
+// GET /{resources}/:id
+router.get('/:id', Controller.one);
+
+// POST /{resources}
+router.post('/', Controller.create);
+
+// PUT /{resources}
+router.put('/:id', Controller.update);
+
+// REMOVE /{resources}
+router.delete('/:id', Controller.remove);
 
 module.exports = router;
