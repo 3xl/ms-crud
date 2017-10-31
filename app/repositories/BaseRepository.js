@@ -115,7 +115,7 @@ class BaseRepository {
      * @memberof BaseRepository
      */
     removeResource(model, id) {
-        return Rx.Observable.fromPromise(model.find({ _id: id}).remove());
+        return Rx.Observable.fromPromise(model.delete({ _id: id }));
     }
 }
 

@@ -2,6 +2,7 @@
 
 const mongoose         = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
+const mongooseDelete   = require('mongoose-delete');
 
 /**
  * Define base schema
@@ -9,6 +10,9 @@ const mongoosePaginate = require('mongoose-paginate');
  */
 let schema = mongoose.Schema(
     {
+        deletedAt: { type: Date, default: null },
+        deleted:   { type: Boolean, default: false },
+        
         // Put here custom properties
     }, 
     {
@@ -21,5 +25,6 @@ let schema = mongoose.Schema(
 );
 
 schema.plugin(mongoosePaginate);
+schema.plugin(mongooseDelete, { deletedAt : true, overrideMethods: true });
 
 module.exports = mongoose.model('{%=o.modelName%}', schema);

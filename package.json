@@ -10,6 +10,7 @@
     "express": "4.14.0",
     "mongo-querystring": "^4.1.1",
     "mongoose": "4.6.5",
+    "mongoose-delete": "^0.4.0",
     "mongoose-paginate": "^5.0.3",
     "morgan": "1.8.1",
     "no-kafka": "^3.2.2",
