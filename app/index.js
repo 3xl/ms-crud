@@ -3,6 +3,8 @@
 const express      = require('express');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
+const helmet       = require('helmet');
+const compression  = require('compression');
 const Rx           = require('rx');
 const fs           = require('fs');
 const path         = require('path');
@@ -63,6 +65,18 @@ class App extends EventEmitter {
         if(this.log == 1) {
             this.express.use(require('morgan')('combined'));
         }
+
+        /**
+         * Security
+         * 
+         */
+        this.express.use(helmet());
+
+        /**
+         * Enable GZip compression
+         * 
+         */
+        this.express.use(compression());
 
         /**
          * Resources

@@ -6,8 +6,10 @@
   "dependencies": {
     "blueimp-tmpl": "3.11.0",
     "body-parser": "1.15.2",
+    "compression": "^1.7.1",
     "dotenv": "2.0.0",
     "express": "4.14.0",
+    "helmet": "^3.9.0",
     "mongo-querystring": "^4.1.1",
     "mongoose": "4.6.5",
     "mongoose-delete": "^0.4.0",
