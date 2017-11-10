@@ -1,15 +1,15 @@
 'use strict';
 
-const BaseService = require('../../services/BaseService.js');
+const Service = require('./Service.js');
 
-const service = new BaseService();
+const service = new Service();
 
 /**
  * 
  * 
- * @class BaseController
+ * @class Controller
  */
-class BaseController {
+class Controller {
 
     /**
      * Get all resources
@@ -19,12 +19,12 @@ class BaseController {
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static all(req, res) {
         let source = service.all(req.model, req.query);
 
-        BaseController.subscribe(source, res);
+        Controller.subscribe(source, res);
     }
 
     /**
@@ -35,12 +35,12 @@ class BaseController {
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static one(req, res) {        
         let source = service.one(req.model, req.params.id);
 
-        BaseController.subscribe(source, res);
+        Controller.subscribe(source, res);
     }
 
     /**
@@ -51,12 +51,12 @@ class BaseController {
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static create(req, res) {
         let source = service.create(req.model, req.body);
 
-        BaseController.subscribe(source, res);
+        Controller.subscribe(source, res);
     }
 
     /**
@@ -67,12 +67,12 @@ class BaseController {
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static update(req, res) {
         let source = service.update(req.model, req.params.id, req.body);
 
-        BaseController.subscribe(source, res);
+        Controller.subscribe(source, res);
     }
 
     /**
@@ -83,23 +83,23 @@ class BaseController {
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static remove(req, res) {
         let source = service.remove(req.model, req.params.id);
 
-        BaseController.subscribe(source, res);
+        Controller.subscribe(source, res);
     }
 
     /**
-     * It handle all the BaseController subscriptions
+     * It handle all the Controller subscriptions
      * 
      * @param {Rx.Observalbe} source 
      * @param {Object} res 
      * 
      * @static
      * 
-     * @memberof BaseController
+     * @memberof Controller
      */
     static subscribe(source, res) {
         source.subscribe(
@@ -112,4 +112,4 @@ class BaseController {
     }
 }
 
-module.exports = BaseController;
+module.exports = Controller;

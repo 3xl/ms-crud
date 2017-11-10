@@ -1,24 +1,26 @@
 'use strict';
 
-const Rx             = require('rx');
-const BaseRepository = require('../repositories/BaseRepository.js');
+const Rx         = require('rx');
+const Repository = require('./Repository.js');
+const Gateway    = require('./Gateway.js');
 
 /**
  * 
  * 
- * @class BaseService
+ * @class Service
  */
-class BaseService {
+class Service {
 
     /**
-     * Creates an instance of BaseService.
+     * Creates an instance of Service.
      * 
      * @public
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     constructor() {
-        this.repository = new BaseRepository();
+        this.repository = new Repository();
+        this.gateway    = new Gateway();
     }
     
     /**
@@ -31,16 +33,18 @@ class BaseService {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     all(model, query = {}) {
-        if(typeof query !== 'object') {
-            return Rx.Observable.throwError();
-        }
-
         let pagination = this._getPagination(query);
 
-        return this.repository.getResources(model, query, pagination);
+        return this.repository.getResources(model, query, pagination)
+            .flatMap(
+                data => this.gateway.getDocsResources(model, data.docs),
+                (data, docs) => {
+                    return Object.assign(data, { docs: docs });
+                }
+            )
     }
 
     /**
@@ -52,14 +56,12 @@ class BaseService {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     one(model, id) {
-        if(typeof id !== 'string') {
-            return Rx.Observable.throwError();
-        }
-
-        return this.repository.getResource(model, id);
+        return this.repository.getResource(model, id)
+            .map(doc => doc.toObject())
+            .flatMap(doc => this.gateway.getDocResources(model, doc))
     }
 
     /**
@@ -72,13 +74,9 @@ class BaseService {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     create(model, data) {
-        if(typeof data !== 'object') {
-            return Rx.Observable.throwError();
-        }
-
         return this.repository.createResource(model, data)
     }
 
@@ -93,13 +91,9 @@ class BaseService {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     update(model, id, data) {
-        if(typeof id !== 'string' && typeof data !== 'object') {
-            return Rx.Observable.throwError();
-        }
-
         return this.repository.updateResource(model, id, data);
     }
 
@@ -113,13 +107,9 @@ class BaseService {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     remove(model, id) {
-        if(typeof id !== 'string') {
-            return Rx.Observable.throwError();
-        }
-
         return this.repository.removeResource(model, id);
     }
 
@@ -137,7 +127,7 @@ class BaseService {
      * 
      * @returns {Object}
      * 
-     * @memberof BaseService
+     * @memberof Service
      */
     _getPagination(query) {
         let pagination = {};
@@ -164,4 +154,4 @@ class BaseService {
     }
 }
 
-module.exports = BaseService;
+module.exports = Service;

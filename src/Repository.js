@@ -2,21 +2,21 @@
 
 const Rx      = require('rx');
 const MongoQS = require('mongo-querystring');
-const Utils   = require('../utils/Utils.js');
+const Utils   = require('./Utils.js');
 
 /**
  * 
  * 
- * @class BaseRepository
+ * @class Repository
  */
-class BaseRepository {
+class Repository {
 
     /**
-     * Creates an instance of BaseRepository.
+     * Creates an instance of Repository.
      * 
      * @public
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     constructor() {
         this.mongoqs = new MongoQS(); 
@@ -33,25 +33,21 @@ class BaseRepository {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     getResources(model, query = {}, pagination = {}) {
         query = this.mongoqs.parse(query);
 
-        if(Utils.Object.isEmpty(pagination)) {
-            return Rx.Observable.fromPromise(model.find(query));
-        } else {
-            return Rx.Observable.create(observer => {
-                model.paginate(query, pagination, (error, results) => {
-                    if(error) {
-                        observer.onError(error);
-                    }
-    
-                    observer.onNext(results);
-                    observer.onCompleted();
-                });
+        return Rx.Observable.create(observer => {
+            model.mongooseModel.paginate(query, pagination, (error, results) => {
+                if (error) {
+                    observer.onError(error);
+                }
+
+                observer.onNext(results);
+                observer.onCompleted();
             });
-        }
+        });
     }
 
     /**
@@ -64,10 +60,10 @@ class BaseRepository {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     getResource(model, id) {        
-        return Rx.Observable.fromPromise(model.findOne({ _id: id }));
+        return Rx.Observable.fromPromise(model.mongooseModel.findOne({ _id: id }));
     }
 
     /**
@@ -80,10 +76,10 @@ class BaseRepository {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     createResource(model, data) {
-        return Rx.Observable.fromPromise(model.create(data));
+        return Rx.Observable.fromPromise(model.mongooseModel.create(data));
     }
 
     /**
@@ -97,10 +93,10 @@ class BaseRepository {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     updateResource(model, id, data) {
-        return Rx.Observable.fromPromise(model.update({ _id: id }, data));
+        return Rx.Observable.fromPromise(model.mongooseModel.update({ _id: id }, data));
     }
 
     /**
@@ -112,11 +108,11 @@ class BaseRepository {
      * 
      * @returns {Rx.Observable}
      * 
-     * @memberof BaseRepository
+     * @memberof Repository
      */
     removeResource(model, id) {
-        return Rx.Observable.fromPromise(model.delete({ _id: id }));
+        return Rx.Observable.fromPromise(model.mongooseModel.delete({ _id: id }));
     }
 }
 
-module.exports = BaseRepository;
+module.exports = Repository;

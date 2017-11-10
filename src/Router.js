@@ -1,6 +1,6 @@
 'use strict';
 
-const Controller = require('../controllers/{%=o.modelName%}Controller.js');
+const Controller = require('./Controller.js');
 const router     = require('express').Router();
 
 // GET /{resources}
