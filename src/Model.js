@@ -21,6 +21,8 @@ class Model {
      * @memberof Model
      */
     constructor(name, properties) {
+        this.name = name;
+        
         /**
          * Define base schema
          * 

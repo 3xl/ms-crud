@@ -5,12 +5,11 @@ const mongoose          = require('mongoose');
 const bodyParser        = require('body-parser');
 const helmet            = require('helmet');
 const compression       = require('compression');
-const Kafka             = require('no-kafka');
 const EventEmitter      = require('events');
 const { Model, Router } = require('./src');
 
 /**
- * 
+ * Main Microservice class
  * 
  * @class Ms
  */
@@ -44,6 +43,13 @@ class Ms extends EventEmitter {
         });
 
         /**
+         * Set a reference to the microservice instance in Express.
+         * It's useful inside an Express middleware
+         * 
+         */
+        this.express.set('ms', this);
+
+        /**
          * Middlewares
          * 
          */
@@ -51,74 +57,38 @@ class Ms extends EventEmitter {
         this.express.use(helmet());
         this.express.use(compression());
         this.express.use(require('morgan')('combined'));
+        this.express.use(this._selecteModel);
 
         /**
          * Routes and Models
          * 
          */
-        this.express.set('models', this.models);
-
-        this.express.use((req, res, next) => {
-            // model reference
-            let models = this.express.get('models');
-
-            req.model = models[req.path.substring(1).split('/')[0]];
-
-            // Ms reference
-            req.ms = this;
-
-            next();
-        });
-
         Object.keys(this.models).forEach(modelName => {
+            // models instance creation 
             this.models[modelName] = new Model(modelName, this.models[modelName]);
 
+            // routes registration
             this.express.use('/' + modelName.toLowerCase(), Router);
         }, this);
     }
 
     /**
-     * It handles the message intercepted by the kafka consumer 
+     * It selects the correct model starting from the base path of route
      * 
-     * @param {any} - messageSet
+     * @param {Object} req 
+     * @param {Object} res 
+     * @param {Function} next 
      * 
      * @private
      * 
      * @memberof Ms
      */
-    _messageHandler(messageSet) {
-        messageSet.forEach((m) => {
-            let message = JSON.parse(m.message.value.toString('utf8'));
-            
-            if(this.log == 1) {
-                console.log(new Date().toISOString(), 'Event consumed');
-            }
+    _selecteModel(req, res, next) {
+        let models = req.app.get('ms').models;
 
-            this.emit('KafkaEvent', message);
-        });
-    }
+        req.model = models[req.path.substring(1).split('/')[0]];
 
-    /**
-     * Add consumer kafka
-     * 
-     * @param {Object} kafkaConfig 
-     * 
-     * @public
-     * 
-     * @memberof Ms
-     */
-    addConsumer(kafkaConfig) {
-        let consumer = new Kafka.SimpleConsumer({
-            groupId:          kafkaConfig.groupName,
-            clientId:         kafkaConfig.clientName,
-            connectionString: kafkaConfig.host + ':' + kafkaConfig.port
-        });
-
-        consumer.init().then(() => {
-            return consumer.subscribe(kafkaConfig.topic, [0], this._messageHandler.bind(this));
-        });
-
-        this.consumers.push(consumer);
+        next();
     }
 
     /**

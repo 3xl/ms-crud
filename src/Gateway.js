@@ -18,7 +18,7 @@ class Gateway {
      * 
      * @public 
      * 
-     * @returns {Observable}
+     * @returns {Rx.Observable}
      * 
      * @memberOf Gateway
      */
@@ -54,7 +54,7 @@ class Gateway {
      * 
      * @public
      *
-     * @returns {Observable}
+     * @returns {Rx.Observable}
      * 
      * @memberOf Gateway
      */
@@ -76,7 +76,7 @@ class Gateway {
      * 
      * @public 
      * 
-     * @returns {Observable}
+     * @returns {Rx.Observable}
      * 
      * @memberof Gateway
      */
@@ -109,7 +109,7 @@ class Gateway {
      * 
      * @public 
      * 
-     * @returns {Observable}
+     * @returns {Rx.Observable}
      * 
      * @memberof Gateway
      */
@@ -129,7 +129,7 @@ class Gateway {
      * 
      * @private
      * 
-     * @returns {Observable}
+     * @returns {Rx.Observable}
      * 
      * @memberof Gateway
      */

@@ -24,7 +24,7 @@ class Controller {
     static all(req, res) {
         let source = service.all(req.model, req.query);
 
-        Controller.subscribe(source, res);
+        Controller.subscribe(source, res, req.app.get('ms'), 'GetAllResources');
     }
 
     /**
@@ -40,7 +40,7 @@ class Controller {
     static one(req, res) {        
         let source = service.one(req.model, req.params.id);
 
-        Controller.subscribe(source, res);
+        Controller.subscribe(source, res, req.app.get('ms'), 'GetOneResource');
     }
 
     /**
@@ -56,7 +56,7 @@ class Controller {
     static create(req, res) {
         let source = service.create(req.model, req.body);
 
-        Controller.subscribe(source, res);
+        Controller.subscribe(source, res, req.app.get('ms'), 'CreateOneResource');
     }
 
     /**
@@ -72,7 +72,7 @@ class Controller {
     static update(req, res) {
         let source = service.update(req.model, req.params.id, req.body);
 
-        Controller.subscribe(source, res);
+        Controller.subscribe(source, res, req.app.get('ms'), 'UpdateOneResource');
     }
 
     /**
@@ -88,7 +88,7 @@ class Controller {
     static remove(req, res) {
         let source = service.remove(req.model, req.params.id);
 
-        Controller.subscribe(source, res);
+        Controller.subscribe(source, res, req.app.get('ms'), 'ReomveOneResource');
     }
 
     /**
@@ -96,18 +96,32 @@ class Controller {
      * 
      * @param {Rx.Observalbe} source 
      * @param {Object} res 
+     * @param {Object} ms 
+     * @param {String} eventName 
      * 
      * @static
      * 
      * @memberof Controller
      */
-    static subscribe(source, res) {
+    static subscribe(source, res, ms, eventName) {
         source.subscribe(
-            response => res.json({ data: response }),
-            error => res.json({ 
-                data: null, 
-                error: error 
-            })
+            response => {
+                // emits the event corresponding to http action
+                ms.emit(eventName, response);
+
+                // send response
+                return res.json({ data: response })
+            },
+            error => {
+                // emits error event
+                ms.emit('Error');
+
+                // send response
+                return res.json({
+                    data: null,
+                    error: error
+                })
+            }
         );
     }
 }

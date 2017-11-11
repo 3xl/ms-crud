@@ -13,7 +13,6 @@
     "mongoose-delete": "^0.4.0",
     "mongoose-paginate": "^5.0.3",
     "morgan": "1.8.1",
-    "no-kafka": "^3.2.8",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "rx": "4.1.0",
@@ -21,11 +20,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "add": "node ./scripts/add.js",
-    "remove": "node ./scripts/remove.js",
-    "list": "node ./scripts/list.js"
+    "test": "node ./test/index.js"
   },
   "author": "Claudio Geraci <geraciclaudio82@gmail.com>",
   "license": "ISC"
