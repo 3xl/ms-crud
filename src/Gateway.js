@@ -71,7 +71,7 @@ class Gateway {
     /**
      * It walk through all the document properties and get the data model from another microservice
      * 
-     * @param {Object} model 
+     * @param {Object} properties 
      * @param {Object} doc 
      * 
      * @public 
@@ -80,15 +80,15 @@ class Gateway {
      * 
      * @memberof Gateway
      */
-    getDocResources(model, doc) {
+    getDocResources(properties, doc) {
         return Rx.Observable.if(
             //
-            () => this._checkRemoteProperties(model, doc),
+            () => this._checkRemoteProperties(properties, doc),
 
             //
-            this._getRemoteProperties(model, doc)
+            this._getRemoteProperties(properties, doc)
                 .flatMap(
-                    key => this.getRemoteResource(model.mongooseModel.schema.obj[key].endpoint, doc[key]),
+                    key => this.getRemoteResource(properties[key].endpoint, doc[key]),
                     (key, resource) => {
                         doc[key] = resource;
 
@@ -104,7 +104,7 @@ class Gateway {
     /**
      * For the documents list it walk through all the document properties and get the data model from another microservice
      * 
-     * @param {Object} model 
+     * @param {Object} properties 
      * @param {Object} doc 
      * 
      * @public 
@@ -113,10 +113,10 @@ class Gateway {
      * 
      * @memberof Gateway
      */
-    getDocsResources(model, docs) {
+    getDocsResources(properties, docs) {
         return Rx.Observable.from(docs)
             .map(doc => doc.toObject())
-            .flatMap(doc => this.getDocResources(model, doc))
+            .flatMap(doc => this.getDocResources(properties, doc))
             .toArray()
     }
     
@@ -124,7 +124,7 @@ class Gateway {
     /**
      * It filters the document's properties containing a joint with another mocroservice
      * 
-     * @param {Object} model 
+     * @param {Object} properties 
      * @param {Object} doc 
      * 
      * @private
@@ -133,17 +133,15 @@ class Gateway {
      * 
      * @memberof Gateway
      */
-    _getRemoteProperties(model, doc) {
-        let mongooseModel = model.mongooseModel;
-
+    _getRemoteProperties(properties, doc) {
         return Rx.Observable.from(Object.keys(doc))
-            .filter(key => mongooseModel.schema.obj[key] && mongooseModel.schema.obj[key].endpoint !== undefined);
+            .filter(key => properties[key] && properties[key].endpoint !== undefined);
     }
 
     /**
      * Check if the model has a property linked with another microservice
      * 
-     * @param {Object} model 
+     * @param {Object} properties 
      * @param {Object} doc 
      * 
      * @private
@@ -152,12 +150,11 @@ class Gateway {
      * 
      * @memberof Gateway
      */
-    _checkRemoteProperties(model, doc) {
-        let obj   = model.mongooseModel.schema.obj;
+    _checkRemoteProperties(properties, doc) {
         let value = false;
 
-        Object.keys(obj).forEach(key => {
-            if(obj[key].endpoint && doc[key])
+        Object.keys(properties).forEach(key => {
+            if (properties[key].endpoint && doc[key])
                 value = true;
         });
 

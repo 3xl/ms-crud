@@ -14,19 +14,21 @@ class Service {
     /**
      * Creates an instance of Service.
      * 
+     * @param {Resource} resource
+     * 
      * @public
      * 
      * @memberof Service
      */
-    constructor() {
-        this.repository = new Repository();
+    constructor(resource) {
+        this.resource   = resource;
+        this.repository = new Repository(this.resource.model);
         this.gateway    = new Gateway();
     }
     
     /**
      * Get all resources
      * 
-     * @param {Module} model
      * @param {Object} query
      * 
      * @public
@@ -35,12 +37,12 @@ class Service {
      * 
      * @memberof Service
      */
-    all(model, query = {}) {
+    all(query = {}) {
         let pagination = this._getPagination(query);
 
-        return this.repository.getResources(model, query, pagination)
+        return this.repository.getResources(query, pagination)
             .flatMap(
-                data => this.gateway.getDocsResources(model, data.docs),
+                data => this.gateway.getDocsResources(this.resource.properties, data.docs),
                 (data, docs) => {
                     return Object.assign(data, { docs: docs });
                 }
@@ -49,7 +51,7 @@ class Service {
 
     /**
      * Get single resource
-     * 
+     *
      * @param {String} id
      * 
      * @public
@@ -58,16 +60,15 @@ class Service {
      * 
      * @memberof Service
      */
-    one(model, id) {
-        return this.repository.getResource(model, id)
+    one(id) {
+        return this.repository.getResource(id)
             .map(doc => doc.toObject())
-            .flatMap(doc => this.gateway.getDocResources(model, doc))
+            .flatMap(doc => this.gateway.getDocResources(this.resource.properties, doc))
     }
 
     /**
      * Create one resource
      * 
-     * @param {Object} model
      * @param {Object} data
      * 
      * @public
@@ -76,14 +77,13 @@ class Service {
      * 
      * @memberof Service
      */
-    create(model, data) {
-        return this.repository.createResource(model, data)
+    create(data) {
+        return this.repository.createResource(data)
     }
 
     /**
      * Update a resource
      * 
-     * @param {Module} model
      * @param {String} id
      * @param {Object} data
      * 
@@ -93,14 +93,13 @@ class Service {
      * 
      * @memberof Service
      */
-    update(model, id, data) {
-        return this.repository.updateResource(model, id, data);
+    update(id, data) {
+        return this.repository.updateResource(id, data);
     }
 
     /**
      * Remove a resource
      * 
-     * @param {Module} model 
      * @param {String} id 
      * 
      * @public
@@ -109,8 +108,8 @@ class Service {
      * 
      * @memberof Service
      */
-    remove(model, id) {
-        return this.repository.removeResource(model, id);
+    remove(id) {
+        return this.repository.removeResource(id);
     }
 
     /**

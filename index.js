@@ -6,7 +6,7 @@ const bodyParser        = require('body-parser');
 const helmet            = require('helmet');
 const compression       = require('compression');
 const EventEmitter      = require('events');
-const { Model, Router } = require('./src');
+const { Resource, Router } = require('./src');
 
 /**
  * Main Microservice class
@@ -19,16 +19,16 @@ class Ms extends EventEmitter {
      * Creates an instance of Ms.
      * 
      * @param {Object} mongo 
-     * @param {Array} models
+     * @param {Object} resources
      * 
      * @memberof Ms
      */
-    constructor(mongo = {}, models = {}) {
+    constructor(mongo = {}, resources = {}) {
         super();
 
         this.express   = express();
         this.mongo     = mongo;
-        this.models    = models
+        this.resources = resources
         this.consumers = [];
 
         /**
@@ -57,23 +57,30 @@ class Ms extends EventEmitter {
         this.express.use(helmet());
         this.express.use(compression());
         this.express.use(require('morgan')('combined'));
-        this.express.use(this._selecteModel);
+        this.express.use(this._selecteResource);
 
         /**
          * Routes and Models
          * 
          */
-        Object.keys(this.models).forEach(modelName => {
-            // models instance creation 
-            this.models[modelName] = new Model(modelName, this.models[modelName]);
+        Object.keys(this.resources).forEach(resourceName => {
+            
+            // resources instance creation 
+            this.resources[resourceName].instance = new Resource(resourceName, this.resources[resourceName].properties);
 
-            // routes registration
-            this.express.use('/' + modelName.toLowerCase(), Router);
+            // default crud routes registration
+            this.express.use('/' + resourceName.toLowerCase(), Router);
+
+            // custom routes registration
+            this.resources[resourceName].routes.forEach(route => {
+                this.express.use('/' + resourceName.toLowerCase() + route.path, route.handler);
+            }, this);
+
         }, this);
     }
 
     /**
-     * It selects the correct model starting from the base path of route
+     * It selects the correct resource starting from the base path of route
      * 
      * @param {Object} req 
      * @param {Object} res 
@@ -83,10 +90,10 @@ class Ms extends EventEmitter {
      * 
      * @memberof Ms
      */
-    _selecteModel(req, res, next) {
-        let models = req.app.get('ms').models;
+    _selecteResource(req, res, next) {
+        let resources = req.app.get('ms').resources;
 
-        req.model = models[req.path.substring(1).split('/')[0]];
+        req.resource = resources[req.path.substring(1).split('/')[0]].instance;
 
         next();
     }

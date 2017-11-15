@@ -2,7 +2,7 @@
 
 module.exports = {
     Controller: require('./Controller.js'),
-    Model:      require('./Model.js'),
+    Resource:      require('./Resource.js'),
     Repository: require('./Repository.js'),
     Service:    require('./Service.js'),
     Router:     require('./Router.js')

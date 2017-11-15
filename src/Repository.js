@@ -14,18 +14,20 @@ class Repository {
     /**
      * Creates an instance of Repository.
      * 
+     * @param {Mongoose Model} model
+     * 
      * @public
      * 
      * @memberof Repository
      */
-    constructor() {
+    constructor(model) {
+        this.model = model;
         this.mongoqs = new MongoQS(); 
     }
 
     /**
      * Get all resources from db
      * 
-     * @param {Model} model
      * @param {Object} query
      * @param {Object} pagination
      * 
@@ -35,11 +37,11 @@ class Repository {
      * 
      * @memberof Repository
      */
-    getResources(model, query = {}, pagination = {}) {
+    getResources(query = {}, pagination = {}) {
         query = this.mongoqs.parse(query);
 
         return Rx.Observable.create(observer => {
-            model.mongooseModel.paginate(query, pagination, (error, results) => {
+            this.model.paginate(query, pagination, (error, results) => {
                 if (error) {
                     observer.onError(error);
                 }
@@ -53,7 +55,6 @@ class Repository {
     /**
      * Get a resource from db
      * 
-     * @param {Model} model
      * @param {any} id
      * 
      * @public
@@ -62,14 +63,13 @@ class Repository {
      * 
      * @memberof Repository
      */
-    getResource(model, id) {        
-        return Rx.Observable.fromPromise(model.mongooseModel.findOne({ _id: id }));
+    getResource(id) {        
+        return Rx.Observable.fromPromise(this.model.findOne({ _id: id }));
     }
 
     /**
      * Create a resource
      * 
-     * @param {Model} model
      * @param {Object} data
      * 
      * @public
@@ -78,14 +78,13 @@ class Repository {
      * 
      * @memberof Repository
      */
-    createResource(model, data) {
-        return Rx.Observable.fromPromise(model.mongooseModel.create(data));
+    createResource(data) {
+        return Rx.Observable.fromPromise(this.model.create(data));
     }
 
     /**
      * Update a resource
      * 
-     * @param {Model} model
      * @param {String} id
      * @param {Objact} data
      * 
@@ -95,13 +94,13 @@ class Repository {
      * 
      * @memberof Repository
      */
-    updateResource(model, id, data) {
-        return Rx.Observable.fromPromise(model.mongooseModel.update({ _id: id }, data));
+    updateResource(id, data) {
+        return Rx.Observable.fromPromise(this.model.update({ _id: id }, data));
     }
 
     /**
      * Remove a resource
-     * 
+     *
      * @param {String} id 
      * 
      * @public
@@ -110,8 +109,8 @@ class Repository {
      * 
      * @memberof Repository
      */
-    removeResource(model, id) {
-        return Rx.Observable.fromPromise(model.mongooseModel.delete({ _id: id }));
+    removeResource(id) {
+        return Rx.Observable.fromPromise(this.model.delete({ _id: id }));
     }
 }
 
