@@ -18,7 +18,7 @@ class Controller {
      * @memberof Controller
      */
     static all(req, res) {
-        let source = req.resource.service.all(req.query);
+        const source = req.resource.service.all(req.query);
 
         Controller.subscribe(source, res, req.app.get('ms'), 'GetAllResources');
     }
@@ -34,7 +34,7 @@ class Controller {
      * @memberof Controller
      */
     static one(req, res) {        
-        let source = req.resource.service.one(req.params.id);
+        const source = req.resource.service.one(req.params.id);
 
         Controller.subscribe(source, res, req.app.get('ms'), 'GetOneResource');
     }
@@ -50,7 +50,7 @@ class Controller {
      * @memberof Controller
      */
     static create(req, res) {
-        let source = req.resource.service.create(req.body);
+        const source = req.resource.service.create(req.body);
 
         Controller.subscribe(source, res, req.app.get('ms'), 'CreateOneResource');
     }
@@ -66,7 +66,7 @@ class Controller {
      * @memberof Controller
      */
     static update(req, res) {
-        let source = req.resource.service.update(req.params.id, req.body);
+        const source = req.resource.service.update(req.params.id, req.body);
 
         Controller.subscribe(source, res, req.app.get('ms'), 'UpdateOneResource');
     }
@@ -82,7 +82,7 @@ class Controller {
      * @memberof Controller
      */
     static remove(req, res) {
-        let source = req.resource.service.remove(req.params.id);
+        const source = req.resource.service.remove(req.params.id);
 
         Controller.subscribe(source, res, req.app.get('ms'), 'ReomveOneResource');
     }

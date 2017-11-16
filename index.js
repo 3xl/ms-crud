@@ -73,11 +73,11 @@ class Ms extends EventEmitter {
 
             // custom routes registration
             if (this.resources[resourceName].routes && this.resources[resourceName].routes.length) {
-                let routes = this.resources[resourceName].routes;
+                const routes = this.resources[resourceName].routes;
                 
                 routes.forEach(route => {
-                    let method = route.method ? route.method.toLowerCase() : 'get';
-                    let path = '/' + resourceName.toLowerCase() + route.path;
+                    const method = route.method ? route.method.toLowerCase() : 'get';
+                    const path = '/' + resourceName.toLowerCase() + route.path;
 
                     this.express[method](path, route.handler);
                 }, this);
@@ -98,7 +98,7 @@ class Ms extends EventEmitter {
      * @memberof Ms
      */
     _selecteResource(req, res, next) {
-        let resources = req.app.get('ms').resources;
+        const resources = req.app.get('ms').resources;
 
         req.resource = resources[req.path.substring(1).split('/')[0]].instance;
 

@@ -37,7 +37,7 @@ class Service {
      * @memberof Service
      */
     all(query = {}) {
-        let pagination = this._getPagination(query);
+        const pagination = this._getPagination(query);
 
         return this.repository.getResources(query, pagination)
             .flatMap(
