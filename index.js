@@ -73,8 +73,13 @@ class Ms extends EventEmitter {
 
             // custom routes registration
             if (this.resources[resourceName].routes && this.resources[resourceName].routes.length) {
-                this.resources[resourceName].routes.forEach(route => {
-                    this.express.use('/' + resourceName.toLowerCase() + route.path, route.handler);
+                let routes = this.resources[resourceName].routes;
+                
+                routes.forEach(route => {
+                    let method = route.method ? route.method.toLowerCase() : 'get';
+                    let path = '/' + resourceName.toLowerCase() + route.path;
+
+                    this.express[method](path, route.handler);
                 }, this);
             }
 

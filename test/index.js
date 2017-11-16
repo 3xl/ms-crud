@@ -33,7 +33,7 @@ let ms = new Ms(
         campaigns: {
             properties: {
                 title: { type: String },
-                itemId: { type: String, endpoint: 'http://localhost:3001/items/' }
+                // itemId: { type: String, endpoint: 'http://localhost:3001/items/' }
             },
             routes: [
                 {
