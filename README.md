@@ -5,7 +5,7 @@ Base crud microservice based on Express and Mongoose
 ```js
 'use strict';
 
-const Ms = require('./index.js');
+const {Ms, subscribe} = require('./index.js');
 
 /**
  * Init application
@@ -22,8 +22,16 @@ let ms = new Ms(
     // Models
     {
         modelName: {
-            propertyName: { type: String },
-            propertyName: { type: String, endpoint: '{address}' }
+            properties: {
+                propertyName: { type: String },
+                propertyName: { type: String, endpoint: '{address}' }
+            },
+            routes: [
+                {
+                    path: '/customPath',
+                    handler: customPathHandler
+                }
+            ]
         }
     }
 );

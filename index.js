@@ -99,6 +99,21 @@ class Ms extends EventEmitter {
     }
 
     /**
+     * It returns the Mongoose model of the resource
+     * 
+     * @param {String} resourceName 
+     * 
+     * @returns {Mongoose Model}
+     * 
+     * @public
+     * 
+     * @memberof Ms
+     */
+    getModel(resourceName) {
+        return this.resources[resourceName].instance.model;
+    }
+
+    /**
      * Start application
      * 
      * @param {Number} - port

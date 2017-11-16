@@ -1,6 +1,6 @@
 'use strict';
 
-const {Ms, subscribe} = require('../index.js');
+const { Ms, subscribe } = require('../index.js');
 
 /**
  * Hanlders
