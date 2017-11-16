@@ -1,6 +1,5 @@
 'use strict';
 
-const Rx         = require('rx');
 const Repository = require('./Repository.js');
 const Gateway    = require('./Gateway.js');
 
@@ -33,7 +32,7 @@ class Service {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Service
      */
@@ -56,7 +55,7 @@ class Service {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Service
      */
@@ -73,7 +72,7 @@ class Service {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Service
      */
@@ -89,7 +88,7 @@ class Service {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Service
      */
@@ -104,7 +103,7 @@ class Service {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Service
      */

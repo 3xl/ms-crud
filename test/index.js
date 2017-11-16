@@ -1,6 +1,20 @@
 'use strict';
 
-const Ms = require('../index.js');
+const {Ms, subscribe} = require('../index.js');
+
+/**
+ * Hanlders
+ * 
+ */
+let statsHandler = (req, res, next) => {
+    subscribe(
+        // Observable
+        req.resource.service.one(req.params.id)
+            .map(campaign => campaign.title),
+        
+        res, req.app.get('ms'), 'StatsHandler'
+    );
+}
 
 /**
  * Init application
@@ -24,14 +38,7 @@ let ms = new Ms(
             routes: [
                 {
                     path: '/:id/stats',
-                    handler: (req, res, next) => {
-                        req.resource.service.one(req.params.id)
-                            .map(campaign => campaign.title)
-                            .subscribe(
-                                title => res.json({ data: { title: title } }),
-                                error => res.json({ data: null, error: error })
-                            )                        
-                    }
+                    handler: statsHandler
                 }
             ]
         }

@@ -90,27 +90,27 @@ class Controller {
     /**
      * It handle all the Controller subscriptions
      * 
-     * @param {Rx.Observalbe} source 
+     * @param {Observable} source 
      * @param {Object} res 
-     * @param {Object} ms 
+     * @param {EventEmitter} eventEmitter 
      * @param {String} eventName 
      * 
      * @static
      * 
      * @memberof Controller
      */
-    static subscribe(source, res, ms, eventName) {
+    static subscribe(source, res, eventEmitter, eventName) {
         source.subscribe(
             response => {
                 // emits the event corresponding to http action
-                ms.emit(eventName, response);
+                eventEmitter.emit(eventName, response);
 
                 // send response
                 return res.json({ data: response })
             },
             error => {
                 // emits error event
-                ms.emit('Error');
+                eventEmitter.emit('Error');
 
                 // send response
                 return res.json({

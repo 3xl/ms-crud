@@ -1,12 +1,12 @@
 'use strict';
 
-const express           = require('express');
-const mongoose          = require('mongoose');
-const bodyParser        = require('body-parser');
-const helmet            = require('helmet');
-const compression       = require('compression');
-const EventEmitter      = require('events');
-const { Resource, Router } = require('./src');
+const express                          = require('express');
+const mongoose                         = require('mongoose');
+const bodyParser                       = require('body-parser');
+const helmet                           = require('helmet');
+const compression                      = require('compression');
+const EventEmitter                     = require('events');
+const { Resource, Router, Controller } = require('./src');
 
 /**
  * Main Microservice class
@@ -117,4 +117,7 @@ class Ms extends EventEmitter {
 
 }
 
-module.exports = Ms;
+module.exports = {
+    Ms: Ms,
+    subscribe: Controller.subscribe
+};

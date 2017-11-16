@@ -33,7 +33,7 @@ class Repository {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Repository
      */
@@ -59,7 +59,7 @@ class Repository {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Repository
      */
@@ -74,7 +74,7 @@ class Repository {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Repository
      */
@@ -90,7 +90,7 @@ class Repository {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Repository
      */
@@ -105,7 +105,7 @@ class Repository {
      * 
      * @public
      * 
-     * @returns {Rx.Observable}
+     * @returns {Observable}
      * 
      * @memberof Repository
      */
