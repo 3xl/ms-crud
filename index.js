@@ -28,7 +28,7 @@ class Ms extends EventEmitter {
 
         this.express   = express();
         this.mongo     = mongo;
-        this.resources = resources
+        this.resources = resources;
         this.consumers = [];
 
         /**
@@ -93,7 +93,20 @@ class Ms extends EventEmitter {
         const method = route.method ? route.method.toLowerCase() : 'get';
         const path = '/' + resource.instance.name.toLowerCase() + route.path;
 
-        this.express[method](path, route.handler);
+        this.express[method](path, [
+            // append the custom event name to the req object
+            (req, res, next) => {
+                req.event = route.event;
+
+                next();
+            },
+
+            // handler
+            route.handler, 
+
+            // observable subscription
+            Controller.subscribe
+        ]);
     }
 
     /**
@@ -149,7 +162,4 @@ class Ms extends EventEmitter {
 
 }
 
-module.exports = {
-    Ms: Ms,
-    subscribe: Controller.subscribe
-};
+module.exports = Ms;

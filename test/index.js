@@ -1,19 +1,16 @@
 'use strict';
 
-const { Ms, subscribe } = require('../index.js');
+const Ms = require('../index.js');
 
 /**
  * Hanlders
  * 
  */
 let statsHandler = (req, res, next) => {
-    subscribe(
-        // Observable
-        req.resource.service.one(req.params.id)
-            .map(campaign => campaign.title),
-        
-        res, req.app.get('ms'), 'StatsHandler'
-    );
+    req.source = req.resource.service.one(req.params.id)
+        .map(campaign => campaign.title);
+
+    next();
 }
 
 /**
@@ -38,7 +35,8 @@ let ms = new Ms(
             routes: [
                 {
                     path: '/:id/stats',
-                    handler: statsHandler
+                    handler: statsHandler,
+                    event: 'Stats'
                 }
             ]
         }
@@ -47,6 +45,10 @@ let ms = new Ms(
 
 ms.start(3000);
 
-ms.on('GetAllResources', (data) => {
-    console.log('GetAllResources handler');
+ms.on('GetAllResources', data => {
+    console.log('GetAllResources');
 });
+
+ms.on('Stats', data => {
+    console.log('Stats');
+})

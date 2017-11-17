@@ -17,10 +17,11 @@ class Controller {
      * 
      * @memberof Controller
      */
-    static all(req, res) {
-        const source = req.resource.service.all(req.query);
+    static all(req, res, next) {
+        req.source = req.resource.service.all(req.query);
+        req.event = 'GetAllResources';
 
-        Controller.subscribe(source, res, req.app.get('ms'), 'GetAllResources');
+        next();
     }
 
     /**
@@ -33,10 +34,11 @@ class Controller {
      * 
      * @memberof Controller
      */
-    static one(req, res) {        
-        const source = req.resource.service.one(req.params.id);
+    static one(req, res, next) {        
+        req.source = req.resource.service.one(req.params.id);
+        req.event = 'GetOneResource';
 
-        Controller.subscribe(source, res, req.app.get('ms'), 'GetOneResource');
+        next()
     }
 
     /**
@@ -49,10 +51,11 @@ class Controller {
      * 
      * @memberof Controller
      */
-    static create(req, res) {
-        const source = req.resource.service.create(req.body);
+    static create(req, res, next) {
+        req.source = req.resource.service.create(req.body);
+        req.event = 'CreateOneResource';
 
-        Controller.subscribe(source, res, req.app.get('ms'), 'CreateOneResource');
+        next()
     }
 
     /**
@@ -65,10 +68,11 @@ class Controller {
      * 
      * @memberof Controller
      */
-    static update(req, res) {
-        const source = req.resource.service.update(req.params.id, req.body);
+    static update(req, res, next) {
+        req.source = req.resource.service.update(req.params.id, req.body);
+        req.event = 'UpdateOneResource';
 
-        Controller.subscribe(source, res, req.app.get('ms'), 'UpdateOneResource');
+        next()
     }
 
     /**
@@ -81,29 +85,31 @@ class Controller {
      * 
      * @memberof Controller
      */
-    static remove(req, res) {
-        const source = req.resource.service.remove(req.params.id);
+    static remove(req, res, next) {
+        req.source = req.resource.service.remove(req.params.id);
+        req.event = 'RemoveOneResource';
 
-        Controller.subscribe(source, res, req.app.get('ms'), 'ReomveOneResource');
+        next()
     }
 
     /**
      * It handle all the Controller subscriptions
      * 
-     * @param {Observable} source 
+     * @param {Object} req 
      * @param {Object} res 
-     * @param {EventEmitter} eventEmitter 
-     * @param {String} eventName 
+     * @param {Function} next 
      * 
      * @static
      * 
      * @memberof Controller
      */
-    static subscribe(source, res, eventEmitter, eventName) {
-        source.subscribe(
+    static subscribe(req, res, next) {
+        const eventEmitter = req.app.get('ms');
+
+        req.source.subscribe(
             response => {
                 // emits the event corresponding to http action
-                eventEmitter.emit(eventName, response);
+                eventEmitter.emit(req.event, response);
 
                 // send response
                 return res.json({ data: response })

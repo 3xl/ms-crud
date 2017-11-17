@@ -5,7 +5,7 @@ Base crud microservice based on Express and Mongoose
 ```js
 'use strict';
 
-const {Ms, subscribe} = require('./index.js');
+const Ms = require('./index.js');
 
 /**
  * Init application
@@ -29,7 +29,8 @@ let ms = new Ms(
             routes: [
                 {
                     path: '/customPath',
-                    handler: customPathHandler
+                    handler: customPathHandler,
+                    event: 'EventName'
                 }
             ]
         }
@@ -39,23 +40,27 @@ let ms = new Ms(
 ms.start(3000);
 
 // Events 
-ms.on('GetAllResources', (data) => {
+ms.on('GetAllResources', data => {
     console.log(data);
 });
 
-ms.on('GetOneResource', (data) => {
+ms.on('GetOneResource', data => {
     console.log(data);
 });
 
-ms.on('CreateOneResource', (data) => {
+ms.on('CreateOneResource', data => {
     console.log(data);
 });
 
-ms.on('UpdateOneResource', (data) => {
+ms.on('UpdateOneResource', data => {
     console.log(data);
 });
 
-ms.on('RemoveAllResources', (data) => {
+ms.on('RemoveAllResources', data => {
+    console.log(data);
+});
+
+ms.on('EventName', data => {
     console.log(data);
 });
 
