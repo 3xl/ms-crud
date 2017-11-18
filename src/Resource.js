@@ -22,7 +22,7 @@ class Resource {
      * @memberof Resource
      */
     constructor(name, properties) {
-        this.name       = name;
+        this.name       = name.charAt(0).toUpperCase() + name.slice(1);
         this.properties = properties;
         
         /**

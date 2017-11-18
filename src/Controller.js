@@ -19,7 +19,7 @@ class Controller {
      */
     static all(req, res, next) {
         req.source = req.resource.service.all(req.query);
-        req.event = 'GetAllResources';
+        req.event = 'GetAll' + req.resource.name;
 
         next();
     }
@@ -36,7 +36,7 @@ class Controller {
      */
     static one(req, res, next) {        
         req.source = req.resource.service.one(req.params.id);
-        req.event = 'GetOneResource';
+        req.event = 'GetOne' + req.resource.name;
 
         next()
     }
@@ -53,7 +53,7 @@ class Controller {
      */
     static create(req, res, next) {
         req.source = req.resource.service.create(req.body);
-        req.event = 'CreateOneResource';
+        req.event = 'CreateOne' + req.resource.name;
 
         next()
     }
@@ -70,7 +70,7 @@ class Controller {
      */
     static update(req, res, next) {
         req.source = req.resource.service.update(req.params.id, req.body);
-        req.event = 'UpdateOneResource';
+        req.event = 'UpdateOne' + req.resource.name;
 
         next()
     }
@@ -87,7 +87,7 @@ class Controller {
      */
     static remove(req, res, next) {
         req.source = req.resource.service.remove(req.params.id);
-        req.event = 'RemoveOneResource';
+        req.event = 'RemoveOne' + req.resource.name;
 
         next()
     }

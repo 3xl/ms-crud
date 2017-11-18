@@ -45,8 +45,8 @@ let ms = new Ms(
 
 ms.start(3000);
 
-ms.on('GetAllResources', data => {
-    console.log('GetAllResources');
+ms.on('GetAllCampaigns', data => {
+    console.log('GetAllCampaigns');
 });
 
 ms.on('Stats', data => {
