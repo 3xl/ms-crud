@@ -67,13 +67,13 @@ class Ms extends EventEmitter {
             let resource = this.resources[resourceName];
             
             // resources instance creation 
-            resource.instance = new Resource(resourceName, resource.properties);
+            resource.instance = new Resource(resourceName, resource.properties, resource.transformer);
 
             // default crud routes registration
             this.express.use('/' + resourceName.toLowerCase(), Router);
 
             // custom routes registration
-            if (resource.routes && resource.routes.length) {                
+            if (resource.routes && resource.routes.length) {
                 resource.routes.forEach(route => this._registerCustomRoute(resource, route), this);
             }
 

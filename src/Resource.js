@@ -16,14 +16,16 @@ class Resource {
      * 
      * @param {String} name 
      * @param {Object} properties 
+     * @param {Function} transformer 
      * 
      * @public
      * 
      * @memberof Resource
      */
-    constructor(name, properties) {
-        this.name       = name.charAt(0).toUpperCase() + name.slice(1);
-        this.properties = properties;
+    constructor(name, properties, transformer) {
+        this.name        = name.charAt(0).toUpperCase() + name.slice(1);
+        this.properties  = properties;
+        this.transformer = transformer;
         
         /**
          * Define base schema

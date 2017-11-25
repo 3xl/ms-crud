@@ -2,6 +2,7 @@
 
 const Repository = require('./Repository.js');
 const Gateway    = require('./Gateway.js');
+const Rx         = require('rx');
 
 /**
  * 
@@ -40,12 +41,23 @@ class Service {
         const pagination = this._getPagination(query);
 
         return this.repository.getResources(query, pagination)
-            .flatMap(
+
+            // get linked remote resources
+            .concatMap(
                 data => this.gateway.getDocsResources(this.resource.properties, data.docs),
                 (data, docs) => {
                     return Object.assign(data, { docs: docs });
                 }
             )
+
+            // apply transformer
+            .concatMap(
+                data => this._transformDocs(data.docs),
+                (data, docs) => {
+                    return Object.assign(data, { docs: docs });
+                }
+            )
+
     }
 
     /**
@@ -61,8 +73,13 @@ class Service {
      */
     one(id) {
         return this.repository.getResource(id)
-            .map(doc => doc.toObject())
+            // .map(doc => doc.toObject())
+            
+            // get linked remote resources
             .flatMap(doc => this.gateway.getDocResources(this.resource.properties, doc))
+
+            // apply transformer
+            .flatMap(doc => this._transformDoc(doc));
     }
 
     /**
@@ -78,6 +95,9 @@ class Service {
      */
     create(data) {
         return this.repository.createResource(data)
+            
+            // apply transformer
+            .flatMap(doc => this._transformDoc(doc));
     }
 
     /**
@@ -93,7 +113,10 @@ class Service {
      * @memberof Service
      */
     update(id, data) {
-        return this.repository.updateResource(id, data);
+        return this.repository.updateResource(id, data)
+
+            // apply transformer
+            .flatMap(doc => this._transformDoc(doc));
     }
 
     /**
@@ -149,6 +172,59 @@ class Service {
         }
 
         return pagination;
+    }
+
+    /**
+     * It returns the collection of documents modified using
+     * the user defined transfomer
+     * 
+     * @param {Array} docs 
+     * 
+     * @private
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    _transformDocs(docs) {
+        return Rx.Observable.if(
+            // check if the resourse has a transformer to be applied
+            () => this.resource.transformer,
+
+            // transform all the documents
+            Rx.Observable.from(docs)
+                .map(this.resource.transformer)
+                .toArray(),
+
+            // return the original docs
+            Rx.Observable.of(docs)
+        );
+    }
+
+    /**
+     * It returns thedocument modified using
+     * the user defined transfomer
+     * 
+     * @param {Object} doc
+     * 
+     * @private
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    _transformDoc(doc) {
+        return Rx.Observable.if(
+            // check if the resourse has a transformer to be applied
+            () => this.resource.transformer,
+            
+            // transform the document
+            Rx.Observable.of(doc)
+                .map(this.resource.transformer),
+
+            // return the original doc
+            Rx.Observable.of(doc)
+        );
     }
 }
 

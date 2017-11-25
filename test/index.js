@@ -6,11 +6,22 @@ const Ms = require('../index.js');
  * Hanlders
  * 
  */
-let statsHandler = (req, res, next) => {
+const statsHandler = (req, res, next) => {
     req.source = req.resource.service.one(req.params.id)
         .map(campaign => campaign.title);
 
     next();
+}
+
+/**
+ * Transformers 
+ * 
+ */
+const campaignTransorfmer = (campaign) => {
+    return {
+        _id: campaign._id,
+        title: campaign.title,
+    };
 }
 
 /**
@@ -29,7 +40,7 @@ let ms = new Ms(
     {
         campaigns: {
             properties: {
-                title: { type: String },
+                title: { type: String, default: '' },
                 // itemId: { type: String, endpoint: 'http://localhost:3001/items/' }
             },
             routes: [
@@ -38,7 +49,8 @@ let ms = new Ms(
                     handler: statsHandler,
                     event: 'Stats'
                 }
-            ]
+            ],
+            transformer: campaignTransorfmer
         }
     }
 );
