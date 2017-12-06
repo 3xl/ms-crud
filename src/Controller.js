@@ -124,7 +124,7 @@ class Controller {
                 eventEmitter.emit('Error');
 
                 // send response
-                return res.json({
+                return res.status(404).json({
                     data: null,
                     error: error
                 })

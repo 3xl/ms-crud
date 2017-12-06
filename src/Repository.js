@@ -94,7 +94,7 @@ class Repository {
      * @memberof Repository
      */
     updateResource(id, data) {
-        return Rx.Observable.fromPromise(this.model.update({ _id: id }, data));
+        return Rx.Observable.fromPromise(this.model.findOneAndUpdate({ _id: id }, data, { "new": true }));
     }
 
     /**

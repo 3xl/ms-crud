@@ -5,18 +5,18 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "1.15.2",
-    "compression": "^1.7.1",
+    "compression": "1.7.1",
     "express": "4.16.0",
-    "helmet": "^3.9.0",
-    "mongo-querystring": "^4.1.1",
+    "helmet": "3.9.0",
+    "mongo-querystring": "4.1.1",
     "mongoose": "4.6.5",
-    "mongoose-delete": "^0.4.0",
-    "mongoose-paginate": "^5.0.3",
+    "mongoose-delete": "0.4.0",
+    "mongoose-paginate": "5.0.3",
     "morgan": "1.8.1",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2",
+    "request": "2.83.0",
+    "request-promise": "4.2.2",
     "rx": "4.1.0",
-    "timber": "^3.1.1"
+    "timber": "3.1.1"
   },
   "repository": {
     "url": "https://github.com/3xl/ms-crud"
