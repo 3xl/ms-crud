@@ -2,7 +2,6 @@
 
 const Rx      = require('rx');
 const MongoQS = require('mongo-querystring');
-const Utils   = require('./Utils.js');
 
 /**
  * 

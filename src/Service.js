@@ -1,7 +1,7 @@
 'use strict';
 
 const Repository = require('./Repository.js');
-const Gateway    = require('./Gateway.js');
+const Rx         = require('rx');
 
 /**
  * 
@@ -22,7 +22,6 @@ class Service {
     constructor(resource) {
         this.resource   = resource;
         this.repository = new Repository(this.resource.model);
-        this.gateway    = new Gateway();
     }
     
     /**
@@ -41,7 +40,12 @@ class Service {
 
         return this.repository.getResources(query, pagination)
             .flatMap(
-                data => this.gateway.getDocsResources(this.resource.properties, data.docs),
+                data => {
+                    return Rx.Observable.from(data.docs)
+                        .map(doc => doc.toObject())
+                        .flatMap(doc => this.resource.appendRemoteResource(doc))
+                        .toArray();
+                },
                 (data, docs) => {
                     return Object.assign(data, { docs: docs });
                 }
@@ -62,7 +66,7 @@ class Service {
     one(id) {
         return this.repository.getResource(id)
             .map(doc => doc.toObject())
-            .flatMap(doc => this.gateway.getDocResources(this.resource.properties, doc))
+            .flatMap(doc => this.resource.appendRemoteResource(doc))
     }
 
     /**

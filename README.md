@@ -1,67 +1,76 @@
-Base crud microservice based on Express and Mongoose
+## Ampermusic Nodejs SDK
 
-### Usage
+[![Ampermusic](https://github.com/3xl/ampermusic/blob/master/ampermusic.png?raw=true)](https://www.ampermusic.com/)
+
+The Amper Music RESTful API provides a programmatic interface for creating and downloading audio projects with the Amper Music system. It emphasizes speed and ease of use, while providing a high degree of expressiveness.
+
+## Installation
+
+```sh
+$ npm install --save ampermusic
+```
+
+## Init
+
+To use this package got to this [page](https://www.ampermusic.com/profile/api-access) and grab your API key
+```js
+const Ampermusic = require('ampermusic').Ampermusic;
+
+// Initialize the Ampermusic class passing the apikey
+let apikey = '';
+
+let ampermusic = new Ampermusic(apikey);
+```
+
+### Get descriptors list
 
 ```js
-'use strict';
+ampermusic.getDescriptors()
+    .then(descriptors => {
+        console.log(descriptors);
+    });
+```
 
-const Ms = require('./index.js');
+### Get single project
 
-/**
- * Init application
- * 
- */
-let ms = new Ms(
-    // Mongo configuration
-    {
-        user: "",
-        password: "",
-        connection: "mongodb://{address}t:{port}/{database}"
-    },
+```js
+let projectId = '';
 
-    // Models
-    {
-        modelName: {
-            properties: {
-                propertyName: { type: String },
-                propertyName: { type: String, endpoint: '{address}' }
-            },
-            routes: [
-                {
-                    path: '/customPath',
-                    handler: customPathHandler,
-                    event: 'EventName'
-                }
-            ]
-        }
-    }
-);
+ampermusic.getProject(projectId)
+    .then(project => {
+        console.log(project);
+    });
+```
 
-ms.start(3000);
+### Create project
 
-// Events 
-ms.on('GetAllResources', data => {
-    console.log(data);
-});
+Projects are a container for system interactions. They primarily define the musical timeline.
 
-ms.on('GetOneResource', data => {
-    console.log(data);
-});
+```js
+let project = ampermusic.createProjectInstance();
 
-ms.on('CreateOneResource', data => {
-    console.log(data);
-});
+project
+    // set project name
+    .setTitle('My project')
+    
+    // add region at a specific time using a descriptor from the list
+    .addRegion(0, 'exciting_modern_folk')
+    .addRegion(10, 'ambient_uplifting_high')
+    
+    // start the creation process
+    .create()
+    
+    // callback
+    .then(project => {
+        console.log(project);
+    })
+    .catch(error => {
+        console.log('Error: ' + error.message);
+    });
+```
 
-ms.on('UpdateOneResource', data => {
-    console.log(data);
-});
+### Download file
 
-ms.on('RemoveAllResources', data => {
-    console.log(data);
-});
-
-ms.on('EventName', data => {
-    console.log(data);
-});
-
+```js
+ampermusic.download('projectId', 'file', 'mp3');
 ```

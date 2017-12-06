@@ -12,6 +12,7 @@ class Controller {
      * 
      * @param {Object} req
      * @param {Object} res
+     * @param {Function} next
      * 
      * @static
      * 
@@ -29,6 +30,7 @@ class Controller {
      * 
      * @param {Object} req
      * @param {Object} res
+     * @param {Function} next
      * 
      * @static
      * 
@@ -46,6 +48,7 @@ class Controller {
      * 
      * @param {Object} req
      * @param {Object} res
+     * @param {Function} next
      * 
      * @static
      * 
@@ -63,6 +66,7 @@ class Controller {
      * 
      * @param {Object} req
      * @param {Object} res
+     * @param {Function} next
      * 
      * @static
      * 
@@ -79,7 +83,8 @@ class Controller {
      * Remove a resource
      * 
      * @param {Object} req 
-     * @param {Object} res 
+     * @param {Object} res
+     * @param {Function} next
      * 
      * @static
      * 

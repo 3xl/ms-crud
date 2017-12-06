@@ -29,7 +29,6 @@ class Ms extends EventEmitter {
         this.express   = express();
         this.mongo     = mongo;
         this.resources = resources;
-        this.consumers = [];
 
         /**
          * Mongo connection
@@ -83,6 +82,7 @@ class Ms extends EventEmitter {
     /**
      * custom routes registration
      * 
+     * @param {Resource} resource 
      * @param {Object} route 
      * 
      * @private
