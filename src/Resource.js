@@ -74,10 +74,10 @@ class Resource {
 
             //
             this._getRemoteProperties(data)
-                .flatMap(
+                .concatMap(
                     key => {
                         const method = Array.isArray(data[key]) ? 'getRemoteResources' : 'getRemoteResource';
-
+                        
                         return Gateway[method](this.properties[key].endpoint, data[key]);
                     },
                     (key, resource) => {
@@ -86,9 +86,35 @@ class Resource {
                         return data;
                     }
                 )
-                .distinct(),
+                .last(),
 
             //
+            Rx.Observable.of(data)
+        );
+    }
+
+    /**
+     * It returns thedocument modified using
+     * the user defined transfomer
+     * 
+     * @param {Object} data
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    transform(data) {
+        return Rx.Observable.if(
+            // check if the resourse has a transformer to be applied
+            () => this.transformer,
+
+            // transform the document
+            Rx.Observable.of(data)
+                .map(this.transformer),
+
+            // return the original doc
             Rx.Observable.of(data)
         );
     }

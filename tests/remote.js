@@ -2,6 +2,15 @@
 
 const Ms = require('../index.js');
 
+const itemTransformer = (item) => {
+    return {
+        _id: item._id,
+        campaign: item.campaign,
+        campaigns: item.campaigns,
+        total: item.campaigns.length
+    };
+}
+
 let ms = new Ms(
     {
         connection: 'mongodb://localhost:27017/ms-crud'
@@ -12,7 +21,8 @@ let ms = new Ms(
                 campaign: { type: String, endpoint: 'http://localhost:3000/campaigns/' },
                 test: { type: String, endpoint: 'http://localhost:3000/campaigns/' },
                 campaigns: { type: [String], endpoint: 'http://localhost:3000/campaigns/' }
-            }
+            },
+            transformer: itemTransformer
         }
     }
 )

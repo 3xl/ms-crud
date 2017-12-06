@@ -43,22 +43,14 @@ class Service {
                 data => {
                     return Rx.Observable.from(data.docs)
                         .map(doc => doc.toObject())
-                        .flatMap(doc => this.resource.appendRemoteResource(doc))
+                        .concatMap(doc => this.resource.appendRemoteResource(doc))
+                        .concatMap(doc => this.resource.transform(doc))
                         .toArray();
                 },
                 (data, docs) => {
                     return Object.assign(data, { docs: docs });
                 }
             )
-
-            // apply transformer
-            .concatMap(
-                data => this._transformDocs(data.docs),
-                (data, docs) => {
-                    return Object.assign(data, { docs: docs });
-                }
-            )
-
     }
 
     /**
@@ -75,8 +67,8 @@ class Service {
     one(id) {
         return this.repository.getResource(id)
             .map(doc => doc.toObject())
-            .flatMap(doc => this.resource.appendRemoteResource(doc))
-            .flatMap(doc => this._transformDoc(doc));
+            .concatMap(doc => this.resource.appendRemoteResource(doc))
+            .concatMap(doc => this.resource.transform(doc))
     }
 
     /**
@@ -92,9 +84,9 @@ class Service {
      */
     create(data) {
         return this.repository.createResource(data)
-            
-            // apply transformer
-            .flatMap(doc => this._transformDoc(doc));
+            .map(doc => doc.toObject())
+            .concatMap(doc => this.resource.appendRemoteResource(doc))
+            .concatMap(doc => this.resource.transform(doc))
     }
 
     /**
@@ -111,9 +103,9 @@ class Service {
      */
     update(id, data) {
         return this.repository.updateResource(id, data)
-
-            // apply transformer
-            .flatMap(doc => this._transformDoc(doc));
+            .map(doc => doc.toObject())
+            .concatMap(doc => this.resource.appendRemoteResource(doc))
+            .concatMap(doc => this.resource.transform(doc))
     }
 
     /**
@@ -129,6 +121,21 @@ class Service {
      */
     remove(id) {
         return this.repository.removeResource(id);
+    }
+
+    /**
+     * Restore a resource
+     * 
+     * @param {String} id 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    restore(id) {
+        return this.repository.restoreResource(id);
     }
 
     /**
@@ -169,59 +176,6 @@ class Service {
         }
 
         return pagination;
-    }
-
-    /**
-     * It returns the collection of documents modified using
-     * the user defined transfomer
-     * 
-     * @param {Array} docs 
-     * 
-     * @private
-     * 
-     * @returns {Observable}
-     * 
-     * @memberof Service
-     */
-    _transformDocs(docs) {
-        return Rx.Observable.if(
-            // check if the resourse has a transformer to be applied
-            () => this.resource.transformer,
-
-            // transform all the documents
-            Rx.Observable.from(docs)
-                .map(this.resource.transformer)
-                .toArray(),
-
-            // return the original docs
-            Rx.Observable.of(docs)
-        );
-    }
-
-    /**
-     * It returns thedocument modified using
-     * the user defined transfomer
-     * 
-     * @param {Object} doc
-     * 
-     * @private
-     * 
-     * @returns {Observable}
-     * 
-     * @memberof Service
-     */
-    _transformDoc(doc) {
-        return Rx.Observable.if(
-            // check if the resourse has a transformer to be applied
-            () => this.resource.transformer,
-            
-            // transform the document
-            Rx.Observable.of(doc)
-                .map(this.resource.transformer),
-
-            // return the original doc
-            Rx.Observable.of(doc)
-        );
     }
 }
 

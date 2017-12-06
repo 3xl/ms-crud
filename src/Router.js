@@ -18,4 +18,7 @@ router.put('/:id', [Controller.update, Controller.subscribe]);
 // REMOVE /{resources}
 router.delete('/:id', [Controller.remove, Controller.subscribe]);
 
+// PATCH /{resources}
+router.patch('/:id', [Controller.restore, Controller.subscribe]);
+
 module.exports = router;

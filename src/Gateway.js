@@ -1,7 +1,8 @@
 'use strict';
 
-const Rx = require('rx');
-const rp = require('request-promise');
+const Rx    = require('rx');
+const rp    = require('request-promise');
+const Utils = require('./Utils.js');
 
 /**
  * It handles the connection to the corresponding microsevice
@@ -31,15 +32,12 @@ class Gateway {
             })
             .then(response => {
                 // extends data with the service response
-                obs.onNext(Object.assign({}, response.data));
-
+                obs.onNext(Object.assign({}, response.data));                
                 obs.onCompleted();
 
                 return null;
             })
             .catch(error => {
-                console.log(error);
-
                 obs.onNext(Object.assign({}));
                 obs.onCompleted();
             });
@@ -59,13 +57,12 @@ class Gateway {
      * @memberOf Gateway
      */
     static getRemoteResources(endpoint, ids) {
-        return Rx.Observable.from(ids).flatMap(id => {
+        return Rx.Observable.from(ids).concatMap(id => {
             return Gateway.getRemoteResource(endpoint, id);
         })
-        .toArray()
         .reduce((acc, item) => {
-            return acc.concat(item);
-        });
+            return Utils.Object.isEmpty(item) ? acc : acc.concat(item);
+        }, []);
     }
 }
 

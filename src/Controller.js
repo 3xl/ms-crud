@@ -98,6 +98,24 @@ class Controller {
     }
 
     /**
+     * Restrore a resource
+     * 
+     * @param {Object} req 
+     * @param {Object} res
+     * @param {Function} next
+     * 
+     * @static
+     * 
+     * @memberof Controller
+     */
+    static restore(req, res, next) {
+        req.source = req.resource.service.restore(req.params.id);
+        req.event = 'RestoreOne' + req.resource.name;
+
+        next()
+    }
+
+    /**
      * It handle all the Controller subscriptions
      * 
      * @param {Object} req 

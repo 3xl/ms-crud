@@ -111,6 +111,21 @@ class Repository {
     removeResource(id) {
         return Rx.Observable.fromPromise(this.model.delete({ _id: id }));
     }
+
+    /**
+     * Restore a resource
+     *
+     * @param {String} id 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    restoreResource(id) {
+        return Rx.Observable.fromPromise(this.model.restore({ _id: id }));
+    }
 }
 
 module.exports = Repository;

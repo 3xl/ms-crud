@@ -1,76 +1,98 @@
-## Ampermusic Nodejs SDK
+Base crud microservice based on Express and Mongoose
 
-[![Ampermusic](https://github.com/3xl/ampermusic/blob/master/ampermusic.png?raw=true)](https://www.ampermusic.com/)
-
-The Amper Music RESTful API provides a programmatic interface for creating and downloading audio projects with the Amper Music system. It emphasizes speed and ease of use, while providing a high degree of expressiveness.
-
-## Installation
-
-```sh
-$ npm install --save ampermusic
-```
-
-## Init
-
-To use this package got to this [page](https://www.ampermusic.com/profile/api-access) and grab your API key
-```js
-const Ampermusic = require('ampermusic').Ampermusic;
-
-// Initialize the Ampermusic class passing the apikey
-let apikey = '';
-
-let ampermusic = new Ampermusic(apikey);
-```
-
-### Get descriptors list
+### Usage
 
 ```js
-ampermusic.getDescriptors()
-    .then(descriptors => {
-        console.log(descriptors);
-    });
-```
+'use strict';
 
-### Get single project
+const Ms = require('./index.js');
 
-```js
-let projectId = '';
+/**
+ * Handlers
+ * 
+ */
+const customPathHandler = (req, res, next) => {
+    // Append a source property, containig an observable, to req object.
+    // It's possible to access to the resource object through req.resource
+    req.source = req.resource.service.one(req.params.id)
+        .map(resource => {});
 
-ampermusic.getProject(projectId)
-    .then(project => {
-        console.log(project);
-    });
-```
+    next();
+}
 
-### Create project
+/**
+ * Transformers
+ * 
+ */
+const resourceTransformer = (resource) => {
+    return {
+        // ...
+    }
+}
 
-Projects are a container for system interactions. They primarily define the musical timeline.
+/**
+ * Init application
+ * 
+ */
+let ms = new Ms(
+    // Mongo configuration
+    {
+        user: "",
+        password: "",
+        connection: "mongodb://{address}t:{port}/{database}"
+    },
 
-```js
-let project = ampermusic.createProjectInstance();
+    // Resources
+    {
+        resourceName: {
+            properties: {
+                propertyName: { type: String },
+                propertyName: { type: String, endpoint: '{address}' }
+            },
+            routes: [
+                {
+                    path: '/customPath',
+                    handler: customPathHandler,
+                    event: 'EventName'
+                }
+            ],
+            transformer: resourceTransformer
+        }
+    }
+);
 
-project
-    // set project name
-    .setTitle('My project')
-    
-    // add region at a specific time using a descriptor from the list
-    .addRegion(0, 'exciting_modern_folk')
-    .addRegion(10, 'ambient_uplifting_high')
-    
-    // start the creation process
-    .create()
-    
-    // callback
-    .then(project => {
-        console.log(project);
-    })
-    .catch(error => {
-        console.log('Error: ' + error.message);
-    });
-```
+ms.start(3000);
 
-### Download file
+/**
+ * Events
+ * 
+ */
+ms.on('GetAllResources', data => {
+    console.log(data);
+});
 
-```js
-ampermusic.download('projectId', 'file', 'mp3');
+ms.on('GetOneResource', data => {
+    console.log(data);
+});
+
+ms.on('CreateOneResource', data => {
+    console.log(data);
+});
+
+ms.on('UpdateOneResource', data => {
+    console.log(data);
+});
+
+ms.on('RemoveOneResources', data => {
+    console.log(data);
+});
+
+ms.on('RestoreOneResources', data => {
+    console.log(data);
+});
+
+ms.on('EventName', data => {
+    console.log(data);
+});
+
 ```
