@@ -132,7 +132,8 @@ class Controller {
         req.source.subscribe(
             response => {
                 // emits the event corresponding to http action
-                eventEmitter.emit(req.event, req.resource, response);
+                if(req.event)
+                    eventEmitter.emit(req.event, req.resource, response);
 
                 // send response
                 return res.json({ data: response })

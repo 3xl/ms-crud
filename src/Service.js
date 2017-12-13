@@ -42,9 +42,7 @@ class Service {
             .flatMap(
                 data => {
                     return Rx.Observable.from(data.docs)
-                        .map(doc => doc.toObject())
-                        .concatMap(doc => this.resource.appendRemoteResource(doc))
-                        .concatMap(doc => this.resource.transform(doc))
+                        .concatMap(doc => this._populateAndTransform(doc))
                         .toArray();
                 },
                 (data, docs) => {
@@ -66,10 +64,8 @@ class Service {
      */
     one(id) {
         return this.repository.getResource(id)
-            .map(doc => doc.toObject())
-            .concatMap(doc => this.resource.appendRemoteResource(doc))
-            .concatMap(doc => this.resource.transform(doc))
-    }
+            .concatMap(doc => this._populateAndTransform(doc)) 
+        }
 
     /**
      * Create one resource
@@ -84,10 +80,8 @@ class Service {
      */
     create(data) {
         return this.repository.createResource(data)
-            .map(doc => doc.toObject())
-            .concatMap(doc => this.resource.appendRemoteResource(doc))
-            .concatMap(doc => this.resource.transform(doc))
-    }
+            .concatMap(doc => this._populateAndTransform(doc)); 
+        }
 
     /**
      * Update a resource
@@ -103,10 +97,8 @@ class Service {
      */
     update(id, data) {
         return this.repository.updateResource(id, data)
-            .map(doc => doc.toObject())
-            .concatMap(doc => this.resource.appendRemoteResource(doc))
-            .concatMap(doc => this.resource.transform(doc))
-    }
+            .concatMap(doc => this._populateAndTransform(doc)) 
+        }
 
     /**
      * Remove a resource
@@ -136,6 +128,24 @@ class Service {
      */
     restore(id) {
         return this.repository.restoreResource(id);
+    }
+
+    /**
+     * 
+     * 
+     * @param {Object} doc 
+     * 
+     * @private
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    _populateAndTransform(doc) {
+        return Rx.Observable.of(doc)
+            .map(doc => doc.toObject())
+            .concatMap(doc => this.resource.appendRemoteResource(doc))
+            .concatMap(doc => this.resource.transform(doc))
     }
 
     /**

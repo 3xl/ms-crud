@@ -1,5 +1,6 @@
 'use strict';
 
+const Rx                               = require('rx');
 const express                          = require('express');
 const mongoose                         = require('mongoose');
 const bodyParser                       = require('body-parser');
@@ -20,15 +21,17 @@ class Ms extends EventEmitter {
      * 
      * @param {Object} mongo 
      * @param {Object} resources
+     * @param {Array} routes
      * 
      * @memberof Ms
      */
-    constructor(mongo = {}, resources = {}) {
+    constructor(mongo = {}, resources = {}, routes = []) {
         super();
 
         this.express   = express();
         this.mongo     = mongo;
         this.resources = resources;
+        this.routes    = routes;
 
         /**
          * Mongo connection
@@ -71,32 +74,60 @@ class Ms extends EventEmitter {
             // default crud routes registration
             this.express.use('/' + resourceName.toLowerCase(), Router);
 
-            // custom routes registration
+            // resource custom routes registration
             if (resource.routes && resource.routes.length) {
-                resource.routes.forEach(route => this._registerCustomRoute(resource, route), this);
+                resource.routes.forEach(route => this._registerCustomRoute(route, resource));
             }
 
         }, this);
+
+        /**
+         * Custom routes
+         * 
+         */        
+        this.routes.forEach(route => {
+            if(route.path == '/healthcheck') {
+                console.log('/healthcheck is a reserved endpoint');
+            }
+            else {
+                this._registerCustomRoute(route);
+            }
+        }, this);
+
+        /**
+         * Health check route
+         * 
+         */
+        this.express.get('/healthcheck', [
+            (req, res, next) => {
+                req.source = Rx.Observable.of({ status: 'ok' });
+
+                next();
+            },
+
+            Controller.subscribe
+        ]);
     }
 
     /**
      * custom routes registration
      * 
-     * @param {Resource} resource 
      * @param {Object} route 
+     * @param {Resource} resource 
      * 
      * @private
      * 
      * @memberof Ms
      */
-    _registerCustomRoute(resource, route) {
+    _registerCustomRoute(route, resource) {
         const method = route.method ? route.method.toLowerCase() : 'get';
-        const path = '/' + resource.instance.name.toLowerCase() + route.path;
+        const path = (resource ? '/' + resource.instance.name.toLowerCase() : '') + route.path;
 
         this.express[method](path, [
             // append the custom event name to the req object
             (req, res, next) => {
-                req.event = route.event;
+                if(route.event) 
+                    req.event = route.event;
 
                 next();
             },
@@ -121,9 +152,10 @@ class Ms extends EventEmitter {
      * @memberof Ms
      */
     _selecteResource(req, res, next) {
-        const resources = req.app.get('ms').resources;
-
-        req.resource = resources[req.path.substring(1).split('/')[0]].instance;
+        const resource = req.app.get('ms').resources[req.path.substring(1).split('/')[0]];
+        
+        if(resource)
+            req.resource = resource.instance;
 
         next();
     }

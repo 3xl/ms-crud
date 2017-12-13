@@ -11,11 +11,19 @@ const Ms = require('./index.js');
  * Handlers
  * 
  */
-const customPathHandler = (req, res, next) => {
+const resourceCustomPathHandler = (req, res, next) => {
     // Append a source property, containig an observable, to req object.
     // It's possible to access to the resource object through req.resource
     req.source = req.resource.service.one(req.params.id)
         .map(resource => {});
+
+    next();
+}
+
+const customPathHandler = (req, res, next) => {
+    const resource = req.app.get('ms').getResource(resourceName);
+
+    req.source = resource.service.all();
 
     next();
 }
@@ -51,14 +59,25 @@ let ms = new Ms(
             },
             routes: [
                 {
-                    path: '/customPath',
-                    handler: customPathHandler,
-                    event: 'EventName'
+                    path: '/resourceCustomPath',
+                    handler: resourceCustomPathHandler,
+                    event: 'ResourceCustomeEventName',
+                    method: 'GET'
                 }
             ],
             transformer: resourceTransformer
         }
-    }
+    },
+
+    // Routes
+    routes: [
+        {
+            path: '/customPath',
+            handler: customPathHandler,
+            event: 'EventName',
+            method: 'GET'
+        }
+    ]
 );
 
 ms.start(3000);
@@ -88,6 +107,10 @@ ms.on('RemoveOneResources', data => {
 });
 
 ms.on('RestoreOneResources', data => {
+    console.log(data);
+});
+
+ms.on('ResourceCustomeEventName', data => {
     console.log(data);
 });
 
