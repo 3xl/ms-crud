@@ -1,6 +1,6 @@
 'use strict';
 
-const Ms = require('../index.js');
+const { Ms, Gateway } = require('../index.js');
 
 const campaignTransformer = (campaign) => {
     return {
