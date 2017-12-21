@@ -62,8 +62,16 @@ class Service {
      */
     latest() {
         return this.repository.getResources({}, { sort: { createdAt: -1 }, limit: 1 })
-            .concatMap(data => Rx.Observable.from(data.docs))
-            .take(1)
+            .concatMap(data => {
+                return Rx.Observable.if(
+                    () => data.docs.length > 0,
+
+                    Rx.Observable.from(data.docs)
+                        .take(1),
+
+                    Rx.Observable.of({})
+                )
+            })
             .concatMap(doc => this._populateAndTransform(doc)) 
     }
 
