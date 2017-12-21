@@ -39,7 +39,7 @@ class Service {
         const pagination = this._getPagination(query);
 
         return this.repository.getResources(query, pagination)
-            .flatMap(
+            .concatMap(
                 data => {
                     return Rx.Observable.from(data.docs)
                         .concatMap(doc => this._populateAndTransform(doc))
@@ -49,6 +49,22 @@ class Service {
                     return Object.assign(data, { docs: docs });
                 }
             )
+    }
+
+    /**
+     * Get the latest resource
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    latest() {
+        return this.repository.getResources({}, { sort: { createdAt: -1 }, limit: 1 })
+            .concatMap(data => Rx.Observable.from(data.docs))
+            .take(1)
+            .concatMap(doc => this._populateAndTransform(doc)) 
     }
 
     /**
@@ -65,7 +81,7 @@ class Service {
     one(id) {
         return this.repository.getResource(id)
             .concatMap(doc => this._populateAndTransform(doc)) 
-        }
+    }
 
     /**
      * Create one resource
@@ -81,7 +97,7 @@ class Service {
     create(data) {
         return this.repository.createResource(data)
             .concatMap(doc => this._populateAndTransform(doc)); 
-        }
+    }
 
     /**
      * Update a resource
@@ -98,7 +114,7 @@ class Service {
     update(id, data) {
         return this.repository.updateResource(id, data)
             .concatMap(doc => this._populateAndTransform(doc)) 
-        }
+    }
 
     /**
      * Remove a resource
@@ -183,6 +199,12 @@ class Service {
             pagination.page = parseInt(query.page);
 
             delete query.page;
+        }
+        
+        if(query.hasOwnProperty('sort')) {
+            pagination.sort = JSON.parse(query.sort);
+
+            delete query.sort;
         }
 
         return pagination;

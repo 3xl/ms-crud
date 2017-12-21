@@ -187,8 +187,6 @@ class Ms extends EventEmitter {
      * @memberof Ms
      */
     start(port) {
-        this.express.set('port', port);
-
         this.express.listen(port, () => {
             console.log('Application started');
         });

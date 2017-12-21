@@ -26,6 +26,24 @@ class Controller {
     }
 
     /**
+     * Get the latest resource
+     * 
+     * @param {Object} req
+     * @param {Object} res
+     * @param {Function} next
+     * 
+     * @static
+     * 
+     * @memberof Controller
+     */
+    static latest(req, res, next) {        
+        req.source = req.resource.service.latest();
+        req.event = 'GetOne' + req.resource.name;
+
+        next()
+    }
+
+    /**
      * Get a resource
      * 
      * @param {Object} req
