@@ -8,6 +8,28 @@ Base crud microservice based on Express and Mongoose
 const Ms = require('./index.js');
 
 /**
+ * Middlewares
+ * 
+ */
+const resourceCustomPathMiddleware = (req, res, next) => {
+    // do something
+
+    next();
+}
+
+const resourceMiddleware = (req, res, next) => {
+    // do something
+
+    next();
+}
+
+const customPathMiddleware = (req, res, next) => {
+    // do something
+
+    next();
+}
+
+/**
  * Handlers
  * 
  */
@@ -57,12 +79,14 @@ let ms = new Ms(
                 propertyName: { type: String },
                 propertyName: { type: String, endpoint: '{address}' }
             },
+            middleware: resourceMiddleware,
             routes: [
                 {
                     path: '/resourceCustomPath',
                     handler: resourceCustomPathHandler,
                     event: 'ResourceCustomeEventName',
-                    method: 'GET'
+                    method: 'GET',
+                    middleware: resourceCustomPathMiddleware
                 }
             ],
             transformer: resourceTransformer
@@ -75,7 +99,8 @@ let ms = new Ms(
             path: '/customPath',
             handler: customPathHandler,
             event: 'EventName',
-            method: 'GET'
+            method: 'GET',
+            middleware: customPathMiddleware
         }
     ]
 );

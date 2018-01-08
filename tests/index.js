@@ -2,6 +2,24 @@
 
 const { Ms, Gateway } = require('../index.js');
 
+const resourceCustomPathMiddleware = (req, res, next) => {
+    console.log('resourceCustomPathMiddleware');
+
+    next();
+}
+
+const resourceMiddleware = (req, res, next) => {
+    console.log('resourceMiddleware');
+
+    next();
+}
+
+const customPathMiddleware = (req, res, next) => {
+    console.log('customPathMiddleware');
+
+    next();
+}
+
 const campaignTransformer = (campaign) => {
     return {
         _id: campaign._id,
@@ -34,11 +52,13 @@ let ms = new Ms(
             properties: {
                 name: { type: String }
             },
-            // transformer: campaignTransformer,
+            transformer: campaignTransformer,
+            middleware: resourceMiddleware,
             routes: [
                 {
                     path: '/:id/customPath',
                     handler: resourceCustomPathHandler,
+                    middleware: resourceCustomPathMiddleware,
                     event: 'ResourceEventName'
                 }
             ]
@@ -48,7 +68,8 @@ let ms = new Ms(
         {
             path: '/customPath',
             handler: customPathHandler,
-            event: 'CustomEventName'
+            event: 'CustomEventName',
+            middleware: customPathMiddleware
         }
     ]
 );

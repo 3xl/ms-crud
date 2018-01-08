@@ -70,16 +70,16 @@ class Ms extends EventEmitter {
         Object.keys(this.resources).forEach(resourceName => {
             let resource = this.resources[resourceName];
             
-            // resources instance creation 
+            // resource instance creation 
             resource.instance = new Resource(resourceName, resource.properties, resource.transformer);
-
-            // default crud routes registration
-            this.express.use('/' + resourceName.toLowerCase(), Router);
 
             // resource custom routes registration
             if (resource.routes && resource.routes.length) {
                 resource.routes.forEach(route => this._registerCustomRoute(route, resource));
             }
+
+            // default crud routes registration
+            this.express.use('/' + resourceName.toLowerCase(), Router);
 
         }, this);
 
@@ -112,6 +112,23 @@ class Ms extends EventEmitter {
     }
 
     /**
+     * 
+     * 
+     * @param {Object} req 
+     * @param {Object} res 
+     * @param {Function} next 
+     * 
+     * @private
+     * 
+     * @memberof Ms
+     */
+    _emptyMiddleware(req, res, next) {
+        req.source = Rx.Observable.of({});
+
+        next();
+    }
+
+    /**
      * custom routes registration
      * 
      * @param {Object} route 
@@ -126,6 +143,12 @@ class Ms extends EventEmitter {
         const path = (resource ? '/' + resource.instance.name.toLowerCase() : '') + route.path;
 
         this.express[method](path, [
+            // prepend resource middleware
+            (resource && resource.middleware ? resource.middleware : this._emptyMiddleware),
+
+            // prepend route middleware
+            (route.middleware ? route.middleware : this._emptyMiddleware),
+
             // append the custom event name to the req object
             (req, res, next) => {
                 if(route.event) 
@@ -135,7 +158,7 @@ class Ms extends EventEmitter {
             },
 
             // handler
-            route.handler, 
+            route.handler ? route.handler : this._emptyMiddleware, 
 
             // observable subscription
             Controller.subscribe

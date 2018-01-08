@@ -64,11 +64,13 @@ class Service {
         return this.repository.getResources({}, { sort: { createdAt: -1 }, limit: 1 })
             .concatMap(data => {
                 return Rx.Observable.if(
+                    // check
                     () => data.docs.length > 0,
+                    
+                    // get the first and only element in the array
+                    Rx.Observable.from(data.docs).take(1),
 
-                    Rx.Observable.from(data.docs)
-                        .take(1),
-
+                    // return an empty object
                     Rx.Observable.of({})
                 )
             })
