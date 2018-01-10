@@ -22,18 +22,20 @@ class Ms extends EventEmitter {
      * Creates an instance of Ms.
      * 
      * @param {Object} mongo 
+     * @param {Array} middlewares
      * @param {Object} resources
      * @param {Array} routes
      * 
      * @memberof Ms
      */
-    constructor(mongo = {}, resources = {}, routes = []) {
+    constructor(mongo = {}, middlewares = [], resources = {}, routes = []) {
         super();
 
-        this.express   = express();
-        this.mongo     = mongo;
-        this.resources = resources;
-        this.routes    = routes;
+        this.express     = express();
+        this.mongo       = mongo;
+        this.middlewares = middlewares;
+        this.resources   = resources;
+        this.routes      = routes;
 
         /**
          * Mongo connection
@@ -57,6 +59,10 @@ class Ms extends EventEmitter {
          * Middlewares
          * 
          */
+        this.middlewares.forEach(middleware => {
+            this.express.use(middleware);
+        });
+
         this.express.use(bodyParser.json());
         this.express.use(helmet());
         this.express.use(compression());

@@ -44,9 +44,15 @@ const customPathHandler = (req, res, next) => {
 }
 
 let ms = new Ms(
+    // mongo
     {
         connection: 'mongodb://localhost:27017/ms-crud'
     },
+
+    // middlewares
+    [],
+
+    // resources
     {
         campaigns: {
             properties: {
@@ -64,6 +70,8 @@ let ms = new Ms(
             ]
         }        
     },
+
+    // custom routes
     [
         {
             path: '/customPath',

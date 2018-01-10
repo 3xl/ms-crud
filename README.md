@@ -72,6 +72,9 @@ let ms = new Ms(
         connection: "mongodb://{address}t:{port}/{database}"
     },
 
+    // Middlewares
+    [middleware]
+
     // Resources
     {
         resourceName: {
@@ -94,7 +97,7 @@ let ms = new Ms(
     },
 
     // Routes
-    routes: [
+    [
         {
             path: '/customPath',
             handler: customPathHandler,
