@@ -151,7 +151,7 @@ class Controller {
             response => {
                 // emits the event corresponding to http action
                 if(req.event)
-                    eventEmitter.emit(req.event, req.resource, response);
+                    eventEmitter.emit(req.event, req.resource, response, eventEmitter);
 
                 // send response
                 return res.json({ data: response })
