@@ -2,6 +2,7 @@
 
 const Rx           = require('rx');
 const express      = require('express');
+const io           = require('socket.io');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
 const helmet       = require('helmet');
@@ -10,6 +11,7 @@ const EventEmitter = require('events');
 const Resource     = require('./Resource.js');
 const Router       = require('./Router.js');
 const Controller   = require('./Controller.js');
+const Utils        = require('./Utils.js');
 
 /**
  * Main Microservice class
@@ -21,21 +23,23 @@ class Ms extends EventEmitter {
     /**
      * Creates an instance of Ms.
      * 
-     * @param {Object} mongo 
-     * @param {Array} middlewares
-     * @param {Object} resources
-     * @param {Array} routes
+     * @param {Object} config
      * 
      * @memberof Ms
      */
-    constructor(mongo = {}, middlewares = [], resources = {}, routes = []) {
+    constructor(config = {}) {
         super();
 
+        if(Utils.Object.isEmpty(config.mongo)) {
+            throw new Error('mongo parameter connection is required.');
+        }
+        
         this.express     = express();
-        this.mongo       = mongo;
-        this.middlewares = middlewares;
-        this.resources   = resources;
-        this.routes      = routes;
+        this.mongo       = config.mongo;
+        this.middlewares = config.middlewares   || [];
+        this.resources   = config.resources     || {};
+        this.socket      = config.socket        || {};
+        this.routes      = config.routes        || [];
 
         /**
          * Mongo connection
@@ -118,7 +122,7 @@ class Ms extends EventEmitter {
     }
 
     /**
-     * 
+     * Useful to handle default behavior
      * 
      * @param {Object} req 
      * @param {Object} res 
@@ -150,10 +154,10 @@ class Ms extends EventEmitter {
 
         this.express[method](path, [
             // prepend resource middleware
-            (resource && resource.middleware ? resource.middleware : this._emptyMiddleware),
+            resource && resource.middleware ? resource.middleware : this._emptyMiddleware,
 
             // prepend route middleware
-            (route.middleware ? route.middleware : this._emptyMiddleware),
+            route.middleware ? route.middleware : this._emptyMiddleware,
 
             // append the custom event name to the req object
             (req, res, next) => {

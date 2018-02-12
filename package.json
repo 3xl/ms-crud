@@ -16,6 +16,7 @@
     "request": "2.83.0",
     "request-promise": "4.2.2",
     "rx": "4.1.0",
+    "socket.io": "^2.0.4",
     "timber": "3.1.1"
   },
   "repository": {

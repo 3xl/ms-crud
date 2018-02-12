@@ -43,43 +43,48 @@ const customPathHandler = (req, res, next) => {
     next();
 }
 
-let ms = new Ms(
-    // mongo
-    {
-        connection: 'mongodb://localhost:27017/ms-crud'
-    },
 
-    // middlewares
-    [],
-
-    // resources
-    {
-        campaigns: {
-            properties: {
-                name: { type: String }
-            },
-            transformer: campaignTransformer,
-            middleware: resourceMiddleware,
-            routes: [
-                {
-                    path: '/:id/customPath',
-                    handler: resourceCustomPathHandler,
-                    middleware: resourceCustomPathMiddleware,
-                    event: 'ResourceEventName'
-                }
-            ]
-        }        
-    },
-
-    // custom routes
-    [
-        {
-            path: '/customPath',
-            handler: customPathHandler,
-            event: 'CustomEventName',
-            middleware: customPathMiddleware
-        }
-    ]
-);
-
-ms.start(3000);
+try {
+    let ms = new Ms({
+        // mongo
+        mongo: {
+            connection: 'mongodb://localhost:27017/ms-crud'
+        },
+    
+        // middlewares
+        middlewares: [],
+    
+        // resources
+        resources: {
+            campaigns: {
+                properties: {
+                    name: { type: String }
+                },
+                transformer: campaignTransformer,
+                middleware: resourceMiddleware,
+                routes: [
+                    {
+                        path: '/:id/customPath',
+                        handler: resourceCustomPathHandler,
+                        middleware: resourceCustomPathMiddleware,
+                        event: 'ResourceEventName'
+                    }
+                ]
+            }        
+        },
+    
+        // custom routes
+        routes: [
+            {
+                path: '/customPath',
+                handler: customPathHandler,
+                event: 'CustomEventName',
+                middleware: customPathMiddleware
+            }
+        ]
+    });
+    
+    ms.start(3000);
+} catch(error) {
+    console.log(error.message)
+}

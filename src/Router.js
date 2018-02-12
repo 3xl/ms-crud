@@ -6,6 +6,9 @@ const router     = require('express').Router();
 // GET /{resources}
 router.get('/', [Controller.all, Controller.subscribe]);
 
+// GET /{resources}/first
+router.get('/first', [Controller.first, Controller.subscribe]);
+
 // GET /{resources}/latest
 router.get('/latest', [Controller.latest, Controller.subscribe]);
 

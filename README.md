@@ -114,35 +114,35 @@ ms.start(3000);
  * Events
  * 
  */
-ms.on('GetAll{resourceName}', (resource, data) => {
+ms.on('GetAll{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('GetOne{resourceName}', (resource, data) => {
+ms.on('GetOne{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('CreateOne{resourceName}', (resource, data) => {
+ms.on('CreateOne{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('UpdateOne{resourceName}', (resource, data) => {
+ms.on('UpdateOne{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('RemoveOne{resourceName}', (resource, data) => {
+ms.on('RemoveOne{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('RestoreOne{resourceName}', (resource, data) => {
+ms.on('RestoreOne{resourceName}', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('ResourceCustomeEventName', (resource, data) => {
+ms.on('ResourceCustomeEventName', (resource, data, emitter) => {
     console.log(data);
 });
 
-ms.on('EventName', (resource, data) => {
+ms.on('EventName', (resource, data, emitter) => {
     console.log(data);
 });
 
