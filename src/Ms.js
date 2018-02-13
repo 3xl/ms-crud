@@ -2,7 +2,6 @@
 
 const Rx           = require('rx');
 const express      = require('express');
-const io           = require('socket.io');
 const mongoose     = require('mongoose');
 const bodyParser   = require('body-parser');
 const helmet       = require('helmet');
@@ -38,7 +37,6 @@ class Ms extends EventEmitter {
         this.mongo       = config.mongo;
         this.middlewares = config.middlewares   || [];
         this.resources   = config.resources     || {};
-        this.socket      = config.socket        || {};
         this.routes      = config.routes        || [];
 
         /**
