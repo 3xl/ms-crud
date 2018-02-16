@@ -10,6 +10,39 @@ const Utils = require('./Utils.js');
  * @class Gateway
  */
 class Gateway {
+    
+    /**
+     * Call a generic endpoint
+     * 
+     * @param {any} endpoint 
+     * @param {string} [method='get'] 
+     * 
+     * @static
+     * 
+     * @returns 
+     * 
+     * @memberof Gateway
+     */
+    static call(endpoint, method = 'get') {
+        return Rx.Observable.create(obs => {
+            rp({
+                method: method,
+                uri: endpoint,
+                json: true
+            })
+            .then(response => {
+                // extends data with the service response
+                obs.onNext(Object.assign({}, response));
+                obs.onCompleted();
+
+                return null;
+            })
+            .catch(error => {
+                obs.onNext(Object.assign({}));
+                obs.onCompleted();
+            });
+        });
+    }
 
     /**
      * Call the correct microservice to get a single resource
