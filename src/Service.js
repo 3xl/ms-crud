@@ -200,6 +200,24 @@ class Service {
     }
 
     /**
+     * Update a document using the 'query' criteria or create a new document
+     * 
+     * @param {any} query 
+     * @param {any} updateData
+     * @param {any} createData
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    updateOrCreate(query, updateData, createData) {
+        return this.repository.updateOrCreate(query, updateData, createData)
+            .concatMap(doc => this._populateAndTransform(doc));
+    }
+
+    /**
      * 
      * 
      * @param {Object} doc 

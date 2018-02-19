@@ -169,6 +169,23 @@ class Controller {
     }
 
     /**
+     * Update a resource or create a new one
+     * 
+     * @param {Object} req 
+     * @param {Object} res
+     * @param {Function} next
+     * 
+     * @static
+     * 
+     * @memberof Controller
+     */
+    static updateOrCreate(req, res, next) {
+        req.source = req.resource.service.updateOrCreate(req.body.query, req.body.updateData, req.body.createData);
+
+        next()
+    }
+
+    /**
      * It handle all the Controller subscriptions
      * 
      * @param {Object} req 

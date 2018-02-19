@@ -22,6 +22,9 @@ router.post('/', [Controller.create, Controller.subscribe]);
 router.post('/findorcreate', [Controller.findOrCreate, Controller.subscribe]);
 
 // PUT /{resources}
+router.put('/updateorcreate', [Controller.updateOrCreate, Controller.subscribe]);
+
+// PUT /{resources}
 router.put('/:id', [Controller.update, Controller.subscribe]);
 
 // REMOVE /{resources}

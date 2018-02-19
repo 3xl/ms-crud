@@ -94,7 +94,7 @@ class Repository {
      * @memberof Repository
      */
     updateResource(id, data) {
-        return Rx.Observable.fromPromise(this.model.findOneAndUpdate({ _id: id }, data));
+        return Rx.Observable.fromPromise(this.model.findOneAndUpdate({ _id: id }, data, { new: true }));
     }
 
     /**
@@ -141,18 +141,50 @@ class Repository {
      */
     findOrCreate(query, data) {
         return this.getResources(query)
-            .concatMap(resource => {
+            .concatMap(resources => {
                 return Rx.Observable.if(
                     // check
-                    () => resource.docs.length > 0,
+                    () => resources.docs.length > 0,
 
                     // get the found resource
-                    Rx.Observable.from(resource.docs)
+                    Rx.Observable.from(resources.docs)
                         .take(1),
 
                     // create a new user
                     Rx.Observable.of(data)
                         .concatMap(data => this.createResource(data))
+                )
+            });
+    }
+
+    /**
+     * Update a document using the 'query' criteria or create a new document
+     * 
+     * @param {any} query 
+     * @param {any} updateData 
+     * @param {any} createData 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    updateOrCreate(query, updateData, createData) {
+        return this.getResources(query)
+            .concatMap(resources => {
+                return Rx.Observable.if(
+                    // check
+                    () => resources.docs.length > 0,
+
+                    // get the found resource
+                    Rx.Observable.from(resources.docs)
+                        .take(1)
+                        .concatMap(resource => this.updateResource(resource._id, updateData)),
+
+                    // create a new user
+                    Rx.Observable.of(createData)
+                        .concatMap(createData => this.createResource(createData))
                 )
             });
     }
