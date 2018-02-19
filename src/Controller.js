@@ -152,6 +152,23 @@ class Controller {
     }
 
     /**
+     * Find a resource or create a new one
+     * 
+     * @param {Object} req 
+     * @param {Object} res
+     * @param {Function} next
+     * 
+     * @static
+     * 
+     * @memberof Controller
+     */
+    static findOrCreate(req, res, next) {
+        req.source = req.resource.service.findOrCreate(req.body.query, req.body.data);
+
+        next()
+    }
+
+    /**
      * It handle all the Controller subscriptions
      * 
      * @param {Object} req 

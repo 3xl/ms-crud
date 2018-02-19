@@ -132,7 +132,7 @@ class Service {
      */
     create(data) {
         return this.repository.createResource(data)
-            .concatMap(doc => this._populateAndTransform(doc)); 
+            .concatMap(doc => this._populateAndTransform(doc));
     }
 
     /**
@@ -180,6 +180,23 @@ class Service {
      */
     restore(id) {
         return this.repository.restoreResource(id);
+    }
+
+    /**
+     * Find a document using the 'query' criteria or create a new document
+     * 
+     * @param {any} query 
+     * @param {any} data 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    findOrCreate(query, data) {
+        return this.repository.findOrCreate(query, data)
+            .concatMap(doc => this._populateAndTransform(doc));
     }
 
     /**

@@ -18,6 +18,9 @@ router.get('/:id', [Controller.one, Controller.subscribe]);
 // POST /{resources}
 router.post('/', [Controller.create, Controller.subscribe]);
 
+// POST /{resources}
+router.post('/findorcreate', [Controller.findOrCreate, Controller.subscribe]);
+
 // PUT /{resources}
 router.put('/:id', [Controller.update, Controller.subscribe]);
 

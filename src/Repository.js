@@ -126,6 +126,36 @@ class Repository {
     restoreResource(id) {
         return Rx.Observable.fromPromise(this.model.restore({ _id: id }));
     }
+
+    /**
+     * Find a document using the 'query' criteria or create a new document
+     * 
+     * @param {any} query 
+     * @param {any} data 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    findOrCreate(query, data) {
+        return this.getResources(query)
+            .concatMap(resource => {
+                return Rx.Observable.if(
+                    // check
+                    () => resource.docs.length > 0,
+
+                    // get the found resource
+                    Rx.Observable.from(resource.docs)
+                        .take(1),
+
+                    // create a new user
+                    Rx.Observable.of(data)
+                        .concatMap(data => this.createResource(data))
+                )
+            });
+    }
 }
 
 module.exports = Repository;
