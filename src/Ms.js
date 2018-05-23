@@ -61,14 +61,15 @@ class Ms extends EventEmitter {
          * Middlewares
          * 
          */
-        this.middlewares.forEach(middleware => {
-            this.express.use(middleware);
-        });
-
         this.express.use(bodyParser.json());
         this.express.use(helmet());
         this.express.use(compression());
         this.express.use(require('morgan')('combined'));
+
+        this.middlewares.forEach(middleware => {
+            this.express.use(middleware);
+        });
+        
         this.express.use(this._selecteResource);
 
         /**

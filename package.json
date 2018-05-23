@@ -1,6 +1,6 @@
 {
   "name": "ms-crud",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Base crud microservice based on Express and Mongoose",
   "main": "index.js",
   "dependencies": {
