@@ -252,7 +252,13 @@ class Service {
      * @memberof Service
      */
     _getPagination(query) {
-        let pagination = {};
+        let pagination = { paginated: 1 };
+
+        if(query.hasOwnProperty('paginated')) {
+            pagination.paginated = parseInt(query.paginated);
+
+            delete query.paginated;
+        }
 
         if(query.hasOwnProperty('limit')) {
             pagination.limit = parseInt(query.limit);

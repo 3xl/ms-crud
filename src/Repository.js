@@ -39,6 +39,30 @@ class Repository {
     getResources(query = {}, pagination = {}) {
         query = this.mongoqs.parse(query);
 
+        // paginated
+        if (pagination.paginated == 1) {
+            return this._getPaginatedResources(query, pagination);
+        }
+        
+        // not paginated
+        else {
+            return this._getAllResources(query);
+        }
+    }
+
+    /**
+     * Get all resources paginated
+     * 
+     * @param {Object} query
+     * @param {Object} pagination
+     * 
+     * @private
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    _getPaginatedResources(query = {}, pagination = {}) {
         return Rx.Observable.create(observer => {
             this.model.paginate(query, pagination, (error, results) => {
                 if (error) {
@@ -46,6 +70,30 @@ class Repository {
                 }
 
                 observer.onNext(results);
+                observer.onCompleted();
+            });
+        });
+    }
+
+    /**
+     * Get all resources not paginated
+     * 
+     * @param {Object} query
+     * 
+     * @private
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    _getAllResources(query = {}) {
+        return Rx.Observable.create(observer => {
+            this.model.find(query, (error, results) => {
+                if (error) {
+                    observer.onError(error);
+                }
+
+                observer.onNext({ docs: results });
                 observer.onCompleted();
             });
         });
