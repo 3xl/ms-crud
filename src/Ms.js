@@ -38,6 +38,7 @@ class Ms extends EventEmitter {
         this.middlewares = config.middlewares   || [];
         this.resources   = config.resources     || {};
         this.routes      = config.routes        || [];
+        this.cors        = config.cors          || false
 
         /**
          * Mongo connection
@@ -61,6 +62,15 @@ class Ms extends EventEmitter {
          * Middlewares
          * 
          */
+        if(this.cors) {
+            this.express.use(function (req, res, next) {
+                res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                
+                next();
+            });
+        }
+
         this.express.use(bodyParser.json());
         this.express.use(helmet());
         this.express.use(compression());

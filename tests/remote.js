@@ -29,12 +29,31 @@
 
 // ms.start(3001);
 
-const express = require('express')();
+// const express = require('express')();
 
-express.get('/healthcheck', (req, res, next) => {
-    res.json({});
-});
+// express.get('/healthcheck', (req, res, next) => {
+//     res.json({});
+// });
 
-express.listen(3003, () => {
-    console.log('Application started');
-});
+// express.listen(3003, () => {
+//     console.log('Application started');
+// });
+
+const Rx = require('rx');
+const { Gateway } = require('../index.js');
+
+Gateway.sendForm('http://www.calorie.it/search', {
+    strKeywords: 'Pesto alla Calabrese - Barilla',
+    suggest: 2,
+    x: 51,
+    y: 9
+})
+// [ 'name', 'statusCode', 'message', 'error', 'options', 'response' ]
+// .do(response => console.log(Object.keys(response.error)))
+.flatMap(response => Rx.Observable.of(response.error))
+// .do(console.log)
+.subscribe(
+    res => console.log(res),
+    error => console.log(error),
+    () => console.log('completed')
+)

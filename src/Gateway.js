@@ -12,6 +12,34 @@ const Utils = require('./Utils.js');
 class Gateway {
     
     /**
+     * Send form data to url
+     * 
+     */
+    static sendForm(endpoint, data) {
+        return Rx.Observable.create(obs => {
+            rp({
+                method: 'POST',
+                url: endpoint,
+                formData: data,
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            })
+            .then(response => {
+                // extends data with the service response
+                obs.onNext(Object.assign({}, response));
+                obs.onCompleted();
+
+                return null;
+            })
+            .catch(error => {
+                obs.onNext(Object.assign({}, { error: error }));
+                obs.onCompleted();
+            });
+        });
+    }
+    
+    /**
      * Call a generic endpoint
      * 
      * @param {any} endpoint 
@@ -38,7 +66,7 @@ class Gateway {
                 return null;
             })
             .catch(error => {
-                obs.onNext(Object.assign({}));
+                obs.onNext(Object.assign({}, { error: error }));
                 obs.onCompleted();
             });
         });
@@ -71,7 +99,7 @@ class Gateway {
                 return null;
             })
             .catch(error => {
-                obs.onNext(Object.assign({}));
+                obs.onNext(Object.assign({}, { error: error }));
                 obs.onCompleted();
             });
         });
