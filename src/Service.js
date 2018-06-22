@@ -183,6 +183,22 @@ class Service {
     }
 
     /**
+     * Find a resourse using a different query criteria and update it
+     * 
+     * @param {Object} query
+     * @param {Object} data
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Service
+     */
+    findAndUpdate(query, data) {
+        return this.repository.findAndUpdate(query, data);
+    }
+
+    /**
      * Find a document using the 'query' criteria or create a new document
      * 
      * @param {any} query 

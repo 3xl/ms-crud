@@ -43,6 +43,21 @@ const customPathHandler = (req, res, next) => {
     next();
 }
 
+const findandupdatePathHandler = (req, res, next) => {
+    const resource = req.app.get('ms').getResource('campaigns');
+
+    req.source = resource.service.findAndUpdate(
+        {
+            name: req.params.name
+        },
+        {
+            name: 'modified name 2'
+        }
+    );
+
+    next();
+}
+
 
 try {
     let ms = new Ms({
@@ -68,6 +83,10 @@ try {
                         handler: resourceCustomPathHandler,
                         middleware: resourceCustomPathMiddleware,
                         event: 'ResourceEventName'
+                    },
+                    {
+                        path: '/findandupdate/:name',
+                        handler: findandupdatePathHandler
                     }
                 ]
             }        

@@ -206,6 +206,39 @@ class Repository {
     }
 
     /**
+     * Find a document using the 'query' criteria or create a new document
+     * 
+     * @param {any} query 
+     * @param {any} data 
+     * 
+     * @public
+     * 
+     * @returns {Observable}
+     * 
+     * @memberof Repository
+     */
+    findAndUpdate(query, data) {
+        return this.getResources(query)
+            .concatMap(resources => {
+                return Rx.Observable.if(
+                    // check
+                    () => resources.docs.length > 0,
+
+                    // get the first and only element in the array
+                    Rx.Observable.from(resources.docs).take(1)
+                        .flatMap(resource => this.updateResource(resource.id, data)),
+
+                    // return the same response of mongoose when it doesn't edit a document
+                    Rx.Observable.of({
+                        ok: 0,
+                        nModified: 0,
+                        n: 0
+                    })
+                )
+            });
+    }
+
+    /**
      * Update a document using the 'query' criteria or create a new document
      * 
      * @param {any} query 
