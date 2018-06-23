@@ -27,7 +27,13 @@ class Gateway {
             })
             .then(response => {
                 // extends data with the service response
-                obs.onNext(Object.assign({}, response));
+                if(typeof response == 'string') {
+                    obs.onNext(Object.assign({}, { html: response }));    
+                }
+                else {
+                    obs.onNext(Object.assign({}, response));
+                }
+                
                 obs.onCompleted();
 
                 return null;
