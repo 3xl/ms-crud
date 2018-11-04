@@ -28,6 +28,7 @@ class Resource {
     this.name = name.charAt(0).toUpperCase() + name.slice(1);
     this.properties = properties;
     this.transformer = transformer;
+    this.transformable = true;
 
     /**
      * Define base schema
@@ -108,7 +109,7 @@ class Resource {
   transform(data) {
     return Rx.Observable.if(
       // check if the resourse has a transformer to be applied
-      () => this.transformer,
+      () => this.transformable && this.transformer,
 
       // transform the document
       Rx.Observable.of(data)
@@ -117,6 +118,29 @@ class Resource {
       // return the original doc
       Rx.Observable.of(data)
     );
+  }
+
+  /**
+   * It cahcnges the transformable value.
+   * Useful when it's ncessary to disable the transformer
+   * 
+   * @param {Boolean} value 
+   * @param {Object} objToPropagate 
+   * @returns 
+   * 
+   * @memberOf Resource
+   */
+  setTransformable(value, objToPropagate) {
+    return Rx.Observable.create(observer => {
+      if(typeof value === "boolean") {
+        this.transformable = value;
+
+        observer.onNext(objToPropagate);
+        observer.onCompleted();
+      } else {
+        observer.onError('Invalid transformable value.')
+      }
+    })
   }
 
   /**
