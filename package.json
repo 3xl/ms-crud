@@ -1,6 +1,6 @@
 {
   "name": "ms-crud",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Base crud microservice based on Express and Mongoose",
   "main": "index.js",
   "dependencies": {
@@ -15,8 +15,7 @@
     "morgan": "1.8.1",
     "request": "2.83.0",
     "request-promise": "4.2.2",
-    "rx": "4.1.0",
-    "timber": "3.1.1"
+    "rx": "4.1.0"
   },
   "repository": {
     "url": "https://github.com/3xl/ms-crud"

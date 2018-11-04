@@ -1,109 +1,115 @@
 'use strict';
 
 const { Ms, Gateway } = require('../index.js');
+const Rx = require('rx');
 
 const resourceCustomPathMiddleware = (req, res, next) => {
-    console.log('resourceCustomPathMiddleware');
+  console.log('resourceCustomPathMiddleware');
 
-    next();
+  next();
 }
 
 const resourceMiddleware = (req, res, next) => {
-    console.log('resourceMiddleware');
+  req.source = Rx.Observable.of({
+    test: '123',
+  });
 
-    next();
+  next();
 }
 
 const customPathMiddleware = (req, res, next) => {
-    console.log('customPathMiddleware');
+  console.log('customPathMiddleware');
 
-    next();
+  next();
 }
 
 const campaignTransformer = (campaign) => {
-    return {
-        _id: campaign._id,
-        name: campaign.name,
-    };
+  return {
+    _id: campaign._id,
+    name: campaign.name,
+  };
 }
 
 const resourceCustomPathHandler = (req, res, next) => {
-    // Append a source property, containig an observable, to req object.
-    // It's possible to access to the resource object through req.resource
-    req.source = req.resource.service.one(req.params.id);
+  // Append a source property, containig an observable, to req object.
+  // It's possible to access to the resource object through req.resource
+  req.source = req.resource.service.one(req.params.id);
 
-    next();
+  next();
 }
 
 const customPathHandler = (req, res, next) => {
-    const resource = req.app.get('ms').getResource('campaigns');
+  const resource = req.app.get('ms').getResource('campaigns');
 
-    req.source = resource.service.all();
+  req.source = resource.service.all();
 
-    next();
+  next();
 }
 
 const findandupdatePathHandler = (req, res, next) => {
-    const resource = req.app.get('ms').getResource('campaigns');
+  const resource = req.app.get('ms').getResource('campaigns');
 
-    req.source = resource.service.findAndUpdate(
+  req.source = resource.service.findAndUpdate(
+    {
+      name: req.params.name
+    },
+    {
+      name: 'modified name 2'
+    }
+  );
+
+  next();
+}
+
+
+
+let ms = new Ms({
+  // mongo
+  mongo: {
+    connection: 'mongodb://localhost:27017/ms-crud'
+  },
+
+  // middlewares
+  middlewares: [],
+
+  // resources
+  resources: {
+    campaigns: {
+      properties: {
+        name: { type: String }
+      },
+      transformer: campaignTransformer,
+      middlewares: [
+        resourceMiddleware
+      ],
+      routes: [
         {
-            name: req.params.name
+          path: '/:id/customPath',
+          handler: resourceCustomPathHandler,
+          middlewares: [
+            resourceCustomPathMiddleware
+          ],
+          event: 'ResourceEventName'
         },
         {
-            name: 'modified name 2'
+          path: '/findandupdate/:name',
+          handler: findandupdatePathHandler
         }
-    );
+      ]
+    }
+  },
 
-    next();
-}
+  // custom routes
+  routes: [
+    {
+      path: '/customPath',
+      handler: customPathHandler,
+      event: 'CustomEventName',
+      middlewares: [
+        customPathMiddleware
+      ]
+    }
+  ]
+});
 
-
-try {
-    let ms = new Ms({
-        // mongo
-        mongo: {
-            connection: 'mongodb://localhost:27017/ms-crud'
-        },
-    
-        // middlewares
-        middlewares: [],
-    
-        // resources
-        resources: {
-            campaigns: {
-                properties: {
-                    name: { type: String }
-                },
-                transformer: campaignTransformer,
-                middleware: resourceMiddleware,
-                routes: [
-                    {
-                        path: '/:id/customPath',
-                        handler: resourceCustomPathHandler,
-                        middleware: resourceCustomPathMiddleware,
-                        event: 'ResourceEventName'
-                    },
-                    {
-                        path: '/findandupdate/:name',
-                        handler: findandupdatePathHandler
-                    }
-                ]
-            }        
-        },
-    
-        // custom routes
-        routes: [
-            {
-                path: '/customPath',
-                handler: customPathHandler,
-                event: 'CustomEventName',
-                middleware: customPathMiddleware
-            }
-        ]
-    });
-    
-    ms.start(3000);
-} catch(error) {
-    console.log(error.message)
-}
+ms.start(3000);

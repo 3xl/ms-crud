@@ -1,7 +1,7 @@
 'use strict';
 
 const Controller = require('./Controller.js');
-const router     = require('express').Router();
+const router = require('express').Router();
 
 // GET /{resources}
 router.get('/', [Controller.all, Controller.subscribe]);
