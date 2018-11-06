@@ -78,7 +78,7 @@ let ms = new Ms({
   resources: {
     campaigns: {
       properties: {
-        name: { type: String }
+        name: { type: String, unique: true }
       },
       transformer: campaignTransformer,
       middlewares: [

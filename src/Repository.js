@@ -126,7 +126,14 @@ class Repository {
    * @memberof Repository
    */
   createResource(data) {
-    return Rx.Observable.fromPromise(this.model.create(data));
+    return Rx.Observable.fromPromise(this.model.create(data))
+
+      // intercept error from Mongo server
+      .catch(error => {
+        if (error.name === 'MongoError' && error.code === 11000) {
+          return Rx.Observable.throw('Duplicated resource.');
+        }
+      });
   }
 
   /**
