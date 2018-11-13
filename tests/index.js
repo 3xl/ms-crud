@@ -81,16 +81,16 @@ let ms = new Ms({
         name: { type: String, unique: true }
       },
       transformer: campaignTransformer,
-      middlewares: [
-        resourceMiddleware
-      ],
+      // middlewares: [
+      //   resourceMiddleware
+      // ],
       routes: [
         {
           path: '/:id/customPath',
           handler: resourceCustomPathHandler,
-          middlewares: [
-            resourceCustomPathMiddleware
-          ],
+          // middlewares: [
+          //   resourceCustomPathMiddleware
+          // ],
           event: 'ResourceEventName'
         },
         {
@@ -107,9 +107,9 @@ let ms = new Ms({
       path: '/customPath',
       handler: customPathHandler,
       event: 'CustomEventName',
-      middlewares: [
-        customPathMiddleware
-      ]
+      // middlewares: [
+      //   customPathMiddleware
+      // ]
     }
   ]
 });

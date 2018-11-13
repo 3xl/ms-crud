@@ -98,7 +98,11 @@ class Ms extends EventEmitter {
       }
 
       // default crud routes registration
-      this.express.use('/' + resourceName.toLowerCase(), [...resource.middlewares, Router]);
+      if(resource.middlewares) {
+        this.express.use('/' + resourceName.toLowerCase(), [...(resource.middlewares), Router]);
+      } else {
+        this.express.use('/' + resourceName.toLowerCase(), [this._emptyMiddleware, Router]);
+      }
 
     }, this);
 
