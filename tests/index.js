@@ -11,9 +11,17 @@ const resourceCustomPathMiddleware = (req, res, next) => {
   next();
 }
 
-const resourceMiddleware = (req, res, next) => {
+const resourceMiddleware2 = (req, res, next) => {
   req.source = req.source
     .flatMap(Rx.Observable.of({ x: 2 }))
+    .do(console.log)
+
+  next();
+}
+
+const resourceMiddleware = (req, res, next) => {
+  req.source = req.source
+    .flatMap(Rx.Observable.of({ x: 1 }))
     .do(console.log)
 
   next();
@@ -85,14 +93,16 @@ let ms = new Ms({
       },
       transformer: campaignTransformer,
       middlewares: [
-        resourceMiddleware
+        resourceMiddleware,
+        resourceMiddleware2,
       ],
       routes: [
         {
           path: '/:id/customPath',
           handler: resourceCustomPathHandler,
           middlewares: [
-            resourceCustomPathMiddleware
+            resourceCustomPathMiddleware,
+            resourceCustomPathMiddleware,
           ],
           event: 'ResourceEventName'
         },

@@ -1,5 +1,7 @@
 'use strict';
 
+const Rx = require('rx');
+
 /**
  * 
  * 
@@ -20,6 +22,8 @@ class Controller {
    */
   static all(req, res, next) {
     req.source = req.source
+      // apply filters extending req.query object
+      .flatMap(() => Rx.Observable.of(Object.assign({}, req.query, req.filters)))
       .flatMap(req.resource.service.all(req.query));
 
     req.event = 'GetAll' + req.resource.name;
@@ -40,7 +44,9 @@ class Controller {
    */
   static first(req, res, next) {
     req.source = req.source
-      .flatMap(req.resource.service.first());
+      // apply filters extending req.query object
+      .flatMap(() => Rx.Observable.of(Object.assign({}, req.query, req.filters)))
+      .flatMap(query => req.resource.service.first(query));
 
     req.event = 'GetOne' + req.resource.name;
 
@@ -60,7 +66,9 @@ class Controller {
    */
   static latest(req, res, next) {
     req.source = req.source
-      .flatMap(req.resource.service.latest());
+      // apply filters extending req.query object
+      .flatMap(() => Rx.Observable.of(Object.assign({}, req.query, req.filters)))
+      .flatMap(query => req.resource.service.latest(query));
 
     req.event = 'GetOne' + req.resource.name;
 

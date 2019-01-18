@@ -54,14 +54,16 @@ class Service {
   /**
    * Get the first resource
    * 
+   * @param {Object} query
+   * 
    * @public
    * 
    * @returns {Observable}
    * 
    * @memberof Service
    */
-  first() {
-    return this.repository.getResources({}, { sort: { createdAt: 1 }, limit: 1 })
+  first(query = {}) {
+    return this.repository.getResources(query, { sort: { createdAt: 1 }, limit: 1 })
       .concatMap(data => {
         return Rx.Observable.if(
           // check
@@ -80,14 +82,16 @@ class Service {
   /**
    * Get the latest resource
    * 
+   * @param {Object} query
+   * 
    * @public
    * 
    * @returns {Observable}
    * 
    * @memberof Service
    */
-  latest() {
-    return this.repository.getResources({}, { sort: { createdAt: -1 }, limit: 1 })
+  latest(query = {}) {
+    return this.repository.getResources(query, { sort: { createdAt: -1 }, limit: 1 })
       .concatMap(data => {
         return Rx.Observable.if(
           // check
