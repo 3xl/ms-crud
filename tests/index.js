@@ -4,21 +4,25 @@ const { Ms, Gateway } = require('../index.js');
 const Rx = require('rx');
 
 const resourceCustomPathMiddleware = (req, res, next) => {
-  console.log('resourceCustomPathMiddleware');
+  req.source = req.source
+    .flatMap(Rx.Observable.of({ x: 1 }))
+    .do(console.log)
 
   next();
 }
 
 const resourceMiddleware = (req, res, next) => {
-  req.source = Rx.Observable.of({
-    test: '123',
-  });
+  req.source = req.source
+    .flatMap(Rx.Observable.of({ x: 2 }))
+    .do(console.log)
 
   next();
 }
 
 const customPathMiddleware = (req, res, next) => {
-  console.log('customPathMiddleware');
+  req.source = req.source
+    .flatMap(Rx.Observable.of({ x: 1 }))
+    .do(console.log)
 
   next();
 }
@@ -80,16 +84,16 @@ let ms = new Ms({
         name: { type: String, unique: true }
       },
       transformer: campaignTransformer,
-      // middlewares: [
-      //   resourceMiddleware
-      // ],
+      middlewares: [
+        resourceMiddleware
+      ],
       routes: [
         {
           path: '/:id/customPath',
           handler: resourceCustomPathHandler,
-          // middlewares: [
-          //   resourceCustomPathMiddleware
-          // ],
+          middlewares: [
+            resourceCustomPathMiddleware
+          ],
           event: 'ResourceEventName'
         },
         {

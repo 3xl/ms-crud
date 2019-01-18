@@ -101,7 +101,7 @@ class Ms extends EventEmitter {
 
       // default crud routes registration
       if(resource.middlewares) {
-        this.express.use('/' + resourceName.toLowerCase(), [...(resource.middlewares), Router]);
+        this.express.use('/' + resourceName.toLowerCase(), [this._emptyMiddleware, ...(resource.middlewares), Router]);
       } else {
         this.express.use('/' + resourceName.toLowerCase(), [this._emptyMiddleware, Router]);
       }
@@ -168,11 +168,13 @@ class Ms extends EventEmitter {
     const path = (resource ? '/' + resource.instance.name.toLowerCase() : '') + route.path;
 
     this.express[method](path, [
+      this._emptyMiddleware,
+
       // prepend resource middleware
-      resource && resource.middlewares ? [...resource.middlewares] : this._emptyMiddleware,
+      resource && resource.middlewares ? [...resource.middlewares] : [],
 
       // prepend route middleware
-      route.middlewares ? [...route.middlewares] : this._emptyMiddleware,
+      route.middlewares ? [...route.middlewares] : [],
 
       // append the custom event name to the req object
       (req, res, next) => {
@@ -183,7 +185,7 @@ class Ms extends EventEmitter {
       },
 
       // handler
-      route.handler ? route.handler : this._emptyMiddleware,
+      route.handler ? route.handler : [],
 
       // observable subscription
       Controller.subscribe
