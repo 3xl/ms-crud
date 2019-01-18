@@ -24,7 +24,7 @@ class Controller {
     req.source = req.source
       // apply filters extending req.query object
       .flatMap(() => Rx.Observable.of(Object.assign({}, req.query, req.filters)))
-      .flatMap(req.resource.service.all(req.query));
+      .flatMap(query => req.resource.service.all(query));
 
     req.event = 'GetAll' + req.resource.name;
 
