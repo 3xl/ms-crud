@@ -33,9 +33,8 @@ const campaignTransformer = (campaign) => {
 const resourceCustomPathHandler = (req, res, next) => {
   // Append a source property, containig an observable, to req object.
   // It's possible to access to the resource object through req.resource
-  req.source = req.resource.setTransformable(false, {})
+  req.source = req.source
     .flatMap(req.resource.service.one(req.params.id))
-    .flatMap(objToPropagate => req.resource.setTransformable(true, objToPropagate));
 
   next();
 }

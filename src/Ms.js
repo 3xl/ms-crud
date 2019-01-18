@@ -48,7 +48,9 @@ class Ms extends EventEmitter {
 
     mongoose.connect(this.mongo.connection, {
       user: this.mongo.user,
-      pass: this.mongo.password
+      pass: this.mongo.password,
+      useCreateIndex: true,
+      useNewUrlParser: true
     });
 
     /**
