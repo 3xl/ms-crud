@@ -2,6 +2,7 @@
 
 const { Ms, Gateway } = require('../index.js');
 const Rx = require('rx');
+const mongoose = require('mongoose');
 
 const resourceCustomPathMiddleware = (req, res, next) => {
   req.source = req.source
@@ -89,9 +90,10 @@ let ms = new Ms({
   resources: {
     campaigns: {
       properties: {
-        name: { type: String, unique: true }
+        name: { type: String, unique: true },
+        item: { type: mongoose.Schema.Types.ObjectId, ref: 'items' },
       },
-      transformer: campaignTransformer,
+      // transformer: campaignTransformer,
       middlewares: [
         resourceMiddleware,
         resourceMiddleware2,
@@ -111,6 +113,11 @@ let ms = new Ms({
           handler: findandupdatePathHandler
         }
       ]
+    },
+    items: {
+      properties: {
+        name: { type: String }
+      }
     }
   },
 

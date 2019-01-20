@@ -159,6 +159,26 @@ class Resource {
       .filter(key => this.properties[key] && this.properties[key].endpoint !== undefined);
   }
 
+   /**
+   * It filters the document's properties containing a joint with another mocroservice
+   * 
+   * @public
+   * 
+   * @returns {String[]}
+   * 
+   * @memberof Resource
+   */
+  getRefProperties() {
+    return Object.keys(this.properties)
+      .filter(key => this.properties[key].ref)
+      .map(key => {
+        return {
+          path: key,
+          model: this.properties[key].ref
+        }
+      })
+  }
+
   /**
   * Check if the model has a property linked with another microservice
   * 

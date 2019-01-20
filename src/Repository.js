@@ -13,14 +13,15 @@ class Repository {
   /**
    * Creates an instance of Repository.
    * 
-   * @param {Mongoose Model} model
+   * @param {Resource} resource
    * 
    * @public
    * 
    * @memberof Repository
    */
-  constructor(model) {
-    this.model = model;
+  constructor(resource) {
+    this.resource = resource;
+    this.model = resource.model;
     this.mongoqs = new MongoQS();
   }
 
@@ -63,6 +64,12 @@ class Repository {
    * @memberof Repository
    */
   _getPaginatedResources(query = {}, pagination = {}) {
+    const refProperties = this.resource.getRefProperties();
+
+    if(refProperties.length) {
+      pagination.populate = refProperties;
+    }
+
     return Rx.Observable.create(observer => {
       this.model.paginate(query, pagination, (error, results) => {
         if (error) {

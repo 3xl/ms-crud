@@ -21,7 +21,7 @@ class Service {
    */
   constructor(resource) {
     this.resource = resource;
-    this.repository = new Repository(this.resource.model);
+    this.repository = new Repository(this.resource);
   }
 
   /**
