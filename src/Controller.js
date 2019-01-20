@@ -108,7 +108,9 @@ class Controller {
    */
   static create(req, res, next) {
     req.source = req.source
-      .flatMap(req.resource.service.create(req.body));
+      // apply data extending req.body object
+      .flatMap(() => Rx.Observable.of(Object.assign({}, req.body, req.data)))
+      .flatMap(body => req.resource.service.create(body));
 
     req.event = 'CreateOne' + req.resource.name;
 
@@ -128,7 +130,9 @@ class Controller {
    */
   static update(req, res, next) {
     req.source = req.source
-      .flatMap(req.resource.service.update(req.params.id, req.body));
+      // apply data extending req.body object
+      .flatMap(() => Rx.Observable.of(Object.assign({}, req.body, req.data)))
+      .flatMap(body => req.resource.service.update(req.params.id, body));
 
     req.event = 'UpdateOne' + req.resource.name;
 
