@@ -170,11 +170,12 @@ class Resource {
    */
   getRefProperties() {
     return Object.keys(this.properties)
-      .filter(key => this.properties[key].ref)
+      .filter(key => this.properties[key].ref && this.properties[key].populate.active)
       .map(key => {
         return {
           path: key,
-          model: this.properties[key].ref
+          model: this.properties[key].ref,
+          select: this.properties[key].populate.select || ''
         }
       })
   }
