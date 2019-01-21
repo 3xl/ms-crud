@@ -170,14 +170,20 @@ class Resource {
    */
   getRefProperties() {
     return Object.keys(this.properties)
-      .filter(key => this.properties[key].ref && this.properties[key].populate.active)
+      .filter(key => {
+        const property = Array.isArray(this.properties[key]) ? this.properties[key][0] : this.properties[key];
+
+        return property.ref && property.populate.active;
+      })
       .map(key => {
+        const property = Array.isArray(this.properties[key]) ? this.properties[key][0] : this.properties[key];
+
         return {
           path: key,
-          model: this.properties[key].ref,
-          select: this.properties[key].populate.select || ''
-        }
-      })
+          model: property.ref,
+          select: property.populate.select || ''
+        };
+      });
   }
 
   /**
