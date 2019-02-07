@@ -14,7 +14,7 @@
     "mongoose-delete": "0.5.0",
     "mongoose-paginate": "5.0.3",
     "morgan": "1.9.1",
-    "request": "2.88.0",
+    "request": "^2.88.0",
     "request-promise": "4.2.2",
     "rx": "4.1.0"
   },
