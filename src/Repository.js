@@ -91,7 +91,9 @@ class Repository {
    */
   _getAllResources(query = {}) {
     return Rx.Observable.create(observer => {
-      this.model.find(query).deepPopulate(this.resource.populate).exec((error, results) => {
+      const paths = this.resource.populate.map(rule => rule.path);
+
+      this.model.find(query).deepPopulate(paths).exec((error, results) => {
         if (error) {
           observer.onError(error);
         }
@@ -114,7 +116,21 @@ class Repository {
    * @memberof Repository
    */
   getResource(id) {
-    return Rx.Observable.fromPromise(this.model.findOne({ _id: id }).deepPopulate(this.resource.populate));
+    return Rx.Observable.create(observer => {
+      const paths = this.resource.populate.map(rule => rule.path);
+
+      this.model.findOne({ _id: id})
+        .deepPopulate(paths)
+        .exec((error, resource) => {
+          if(error) {
+            observer.onError(error);
+          }
+          else {
+            observer.onNext(resource);
+            observer.onCompleted();
+          }
+        })
+    })
   }
 
   /**
