@@ -30,7 +30,7 @@ class Resource {
     this.properties = properties;
     this.transformer = transformer;
     this.transformable = true;
-    this.populate = populate;
+    this.populate = populate || [];
 
     /**
      * Define base schema

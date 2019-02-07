@@ -64,9 +64,7 @@ class Repository {
    * @memberof Repository
    */
   _getPaginatedResources(query = {}, pagination = {}) {
-    if(this.resource.populate) {
-      pagination.populate = this.resource.populate;
-    }
+    pagination.populate = this.resource.populate;
 
     return Rx.Observable.create(observer => {
       this.model.paginate(query, pagination, (error, results) => {
@@ -93,7 +91,7 @@ class Repository {
    */
   _getAllResources(query = {}) {
     return Rx.Observable.create(observer => {
-      this.model.find(query, (error, results) => {
+      this.model.find(query).deepPopulate(this.resource.populate).exec((error, results) => {
         if (error) {
           observer.onError(error);
         }
@@ -116,7 +114,7 @@ class Repository {
    * @memberof Repository
    */
   getResource(id) {
-    return Rx.Observable.fromPromise(this.model.findOne({ _id: id }));
+    return Rx.Observable.fromPromise(this.model.findOne({ _id: id }).deepPopulate(this.resource.populate));
   }
 
   /**
