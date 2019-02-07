@@ -92,7 +92,7 @@ class Ms extends EventEmitter {
       let resource = this.resources[resourceName];
 
       // resource instance creation 
-      resource.instance = new Resource(resourceName, resource.properties, resource.transformer);
+      resource.instance = new Resource(resourceName, resource.properties, resource.transformer, resource.populate);
 
       // resource custom routes registration
       if (resource.routes && resource.routes.length) {

@@ -6,6 +6,7 @@ const Gateway = require('./Gateway.js');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate');
 const mongooseDelete = require('mongoose-delete');
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 /**
  * 
@@ -24,11 +25,12 @@ class Resource {
    * 
    * @memberof Resource
    */
-  constructor(name, properties, transformer) {
+  constructor(name, properties, transformer, populate) {
     this.name = name.charAt(0).toUpperCase() + name.slice(1);
     this.properties = properties;
     this.transformer = transformer;
     this.transformable = true;
+    this.populate = populate;
 
     /**
      * Define base schema
@@ -45,6 +47,7 @@ class Resource {
       }
     );
 
+    schema.plugin(deepPopulate, { populate: this.populate });
     schema.plugin(mongoosePaginate);
     schema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: true });
 
@@ -157,33 +160,6 @@ class Resource {
   _getRemoteProperties(data) {
     return Rx.Observable.from(Object.keys(data))
       .filter(key => this.properties[key] && this.properties[key].endpoint !== undefined);
-  }
-
-   /**
-   * It filters the document's properties containing a joint with another mocroservice
-   * 
-   * @public
-   * 
-   * @returns {String[]}
-   * 
-   * @memberof Resource
-   */
-  getRefProperties() {
-    return Object.keys(this.properties)
-      .filter(key => {
-        const property = Array.isArray(this.properties[key]) ? this.properties[key][0] : this.properties[key];
-
-        return property.ref && property.populate.active;
-      })
-      .map(key => {
-        const property = Array.isArray(this.properties[key]) ? this.properties[key][0] : this.properties[key];
-
-        return {
-          path: key,
-          model: property.ref,
-          select: property.populate.select || ''
-        };
-      });
   }
 
   /**

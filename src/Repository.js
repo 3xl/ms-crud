@@ -64,10 +64,8 @@ class Repository {
    * @memberof Repository
    */
   _getPaginatedResources(query = {}, pagination = {}) {
-    const refProperties = this.resource.getRefProperties();
-
-    if(refProperties.length) {
-      pagination.populate = refProperties;
+    if(this.resource.populate) {
+      pagination.populate = this.resource.populate;
     }
 
     return Rx.Observable.create(observer => {

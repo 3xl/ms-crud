@@ -91,8 +91,22 @@ let ms = new Ms({
     campaigns: {
       properties: {
         name: { type: String, unique: true },
-        item: { type: mongoose.Schema.Types.ObjectId, ref: 'items', populate: { active: true, select: 'name' } },
+        item: { type: mongoose.Schema.Types.ObjectId, ref: 'items' },
+        items: [{
+          item: { type: mongoose.Schema.Types.ObjectId, ref: 'items' },
+          quantity: { type: Number },
+        }],
       },
+      populate: [
+        {
+          path: 'items.item',
+          select: 'name',
+        },
+        {
+          path: 'item',
+          select: 'name',
+        },
+      ],
       // transformer: campaignTransformer,
       middlewares: [
         resourceMiddleware,
