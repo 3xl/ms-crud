@@ -91,7 +91,7 @@ class Repository {
    */
   _getAllResources(query = {}) {
     return Rx.Observable.create(observer => {
-      this.model.find(query).populate().exec((error, results) => {
+      this.model.find(query).populate(this.resource.populate).exec((error, results) => {
         if (error) {
           observer.onError(error);
         }
@@ -114,7 +114,10 @@ class Repository {
    * @memberof Repository
    */
   getResource(id) {
-    return Rx.Observable.fromPromise(this.model.findOne({ _id: id}).populate(this.resource.populate));
+    return Rx.Observable.fromPromise(this.model.findOne({ 
+        _id: id
+      })
+      .populate(this.resource.populate));
   }
 
   /**

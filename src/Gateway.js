@@ -25,23 +25,23 @@ class Gateway {
           'content-type': 'multipart/form-data'
         }
       })
-        .then(response => {
-          // extends data with the service response
-          if (typeof response == 'string') {
-            obs.onNext(Object.assign({}, { html: response }));
-          }
-          else {
-            obs.onNext(Object.assign({}, response));
-          }
+      .then(response => {
+        // extends data with the service response
+        if (typeof response == 'string') {
+          obs.onNext(Object.assign({}, { html: response }));
+        }
+        else {
+          obs.onNext(Object.assign({}, response));
+        }
 
-          obs.onCompleted();
+        obs.onCompleted();
 
-          return null;
-        })
-        .catch(error => {
-          obs.onNext(Object.assign({}, { error: error }));
-          obs.onCompleted();
-        });
+        return null;
+      })
+      .catch(error => {
+        obs.onNext(Object.assign({}, { error: error }));
+        obs.onCompleted();
+      });
     });
   }
 
@@ -64,17 +64,17 @@ class Gateway {
         uri: endpoint,
         json: true
       })
-        .then(response => {
-          // extends data with the service response
-          obs.onNext(Object.assign({}, response));
-          obs.onCompleted();
+      .then(response => {
+        // extends data with the service response
+        obs.onNext(Object.assign({}, response));
+        obs.onCompleted();
 
-          return null;
-        })
-        .catch(error => {
-          obs.onNext(Object.assign({}, { error: error }));
-          obs.onCompleted();
-        });
+        return null;
+      })
+      .catch(error => {
+        obs.onNext(Object.assign({}, { error: error }));
+        obs.onCompleted();
+      });
     });
   }
 
@@ -97,17 +97,17 @@ class Gateway {
         uri: endpoint + id,
         json: true
       })
-        .then(response => {
-          // extends data with the service response
-          obs.onNext(Object.assign({}, response.data));
-          obs.onCompleted();
+      .then(response => {
+        // extends data with the service response
+        obs.onNext(Object.assign({}, response.data));
+        obs.onCompleted();
 
-          return null;
-        })
-        .catch(error => {
-          obs.onNext(Object.assign({}, { error: error }));
-          obs.onCompleted();
-        });
+        return null;
+      })
+      .catch(error => {
+        obs.onNext(Object.assign({}, { error: error }));
+        obs.onCompleted();
+      });
     });
   }
 
@@ -125,8 +125,8 @@ class Gateway {
    */
   static getRemoteResources(endpoint, ids) {
     return Rx.Observable.from(ids).concatMap(id => {
-      return Gateway.getRemoteResource(endpoint, id);
-    })
+        return Gateway.getRemoteResource(endpoint, id);
+      })
       .reduce((acc, item) => {
         return Utils.Object.isEmpty(item) ? acc : acc.concat(item);
       }, []);
