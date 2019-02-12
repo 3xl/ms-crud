@@ -133,6 +133,7 @@ class Repository {
    */
   createResource(data) {
     return Rx.Observable.fromPromise(this.model.create(data))
+      .concatMap(doc => this.getResource(doc._id))
 
       // intercept error from Mongo server
       .catch(error => {
@@ -155,7 +156,8 @@ class Repository {
    * @memberof Repository
    */
   updateResource(id, data) {
-    return Rx.Observable.fromPromise(this.model.findOneAndUpdate({ _id: id }, data, { new: true }));
+    return Rx.Observable.fromPromise(this.model.findOneAndUpdate({ _id: id }, data, { new: true }))
+      .concatMap(doc => this.getResource(doc._id));
   }
 
   /**
