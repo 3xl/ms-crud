@@ -4,6 +4,10 @@ const { Ms, Gateway } = require('../index.js');
 const Rx = require('rx');
 const mongoose = require('mongoose');
 
+const indexHandler = (req, res, next) => {
+  res.sendFile(__dirname + '/index.html');
+}
+
 const resourceCustomPathMiddleware = (req, res, next) => {
   req.source = req.source
     .flatMap(Rx.Observable.of({ x: 1 }))
@@ -75,12 +79,31 @@ const findandupdatePathHandler = (req, res, next) => {
   next();
 }
 
+const socketEventNameHandler = (data) => {
+  return Rx.Observable.of(data)
+    .do(console.log)
+};
 
 
 let ms = new Ms({
   // mongo
   mongo: {
     connection: 'mongodb://localhost:27017/ms-crud'
+  },
+
+  socket: {
+    private: {
+      events: [
+        {
+          name: 'SocketEventName',
+          handler: socketEventNameHandler
+        },
+        {
+          name: 'SocketEventName2',
+          handler: socketEventNameHandler
+        }
+      ]
+    }
   },
 
   // middlewares
@@ -137,6 +160,10 @@ let ms = new Ms({
 
   // custom routes
   routes: [
+    {
+      path: '/',
+      handler: indexHandler
+    },
     {
       path: '/customPath',
       handler: customPathHandler,

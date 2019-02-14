@@ -2,6 +2,7 @@
 
 const Rx = require('rx');
 const express = require('express');
+const http = require('http');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
@@ -10,6 +11,7 @@ const EventEmitter = require('events');
 const Resource = require('./Resource.js');
 const Router = require('./Router.js');
 const Controller = require('./Controller.js');
+const Socket = require('./Socket.js');
 const Utils = require('./Utils.js');
 
 /**
@@ -34,11 +36,13 @@ class Ms extends EventEmitter {
     }
 
     this.express = express();
+    this.http = http.Server(this.express);
     this.mongo = config.mongo;
     this.middlewares = config.middlewares || [];
     this.resources = config.resources || {};
     this.routes = config.routes || [];
     this.cors = config.cors || false
+    this.socket = new Socket(this.http, config.socket);
 
     /**
      * Mongo connection
@@ -237,7 +241,7 @@ class Ms extends EventEmitter {
    * @memberof Ms
    */
   start(port) {
-    this.express.listen(port, () => {
+    this.http.listen(port, () => {
       console.log('Application started');
     });
   }
