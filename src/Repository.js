@@ -140,6 +140,9 @@ class Repository {
         if (error.name === 'MongoError' && error.code === 11000) {
           return Rx.Observable.throw('Duplicated resource.');
         }
+        else {
+          return Rx.Observable.throw(error.message);
+        }
       });
   }
 
