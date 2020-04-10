@@ -54,7 +54,8 @@ class Ms extends EventEmitter {
       user: this.mongo.user,
       pass: this.mongo.password,
       useCreateIndex: true,
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
 
     /**

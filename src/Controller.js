@@ -249,7 +249,7 @@ class Controller {
       },
       error => {
         // emits error event
-        eventEmitter.emit('Error');
+        eventEmitter.emit('Error', error);
 
         // send response
         return res.status(404).json({
