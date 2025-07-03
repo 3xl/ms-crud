@@ -22,10 +22,13 @@
   "repository": {
     "url": "https://github.com/3xl/ms-crud"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nx": "21.2.2"
+  },
   "scripts": {
     "test": "node ./test/index.js"
   },
   "author": "Claudio Geraci <geraciclaudio82@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "nx": {}
 }
